@@ -98,6 +98,13 @@ export default function Dashboard() {
       />
 
       <Button title="Login" onPress={handleLogin} />
+      <TouchableOpacity
+          onPress={() => router.push("/dashboard/register")}
+      >
+        <Text style={{ color: "blue", marginTop: 15 }}>
+         Don't have Client ID? Register Solar Plant
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }
