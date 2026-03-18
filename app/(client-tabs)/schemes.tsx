@@ -1,224 +1,239 @@
+
 import React from "react";
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
+import {
+View,
+Text,
+ScrollView,
+TouchableOpacity,
+Dimensions
+} from "react-native";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
+import { Colors } from "../theme/colors";
+import { Theme } from "../theme/theme";
+import { GlobalStyles } from "../theme/globalStyles";
+
+const width = Dimensions.get("window").width;
+
 export default function Schemes() {
-  return (
-    <ScrollView style={styles.container}>
+return (
+<View style={{flex:1}}>
 
-      {/* HERO SECTION */}
-      <View style={styles.hero}>
-        <Text style={styles.heroTitle}>Go Solar & Save Big ☀️</Text>
-        <Text style={styles.heroSub}>
-          Reduce electricity bill up to 90% with Govt Subsidy
-        </Text>
+<ScrollView style={GlobalStyles.container}>
 
-        <TouchableOpacity style={styles.primaryBtn}>
-          <Text style={styles.btnText}>Check Eligibility</Text>
-        </TouchableOpacity>
-      </View>
+{/* ⭐ HERO */}
+<View style={{
+backgroundColor:Colors.primary,
+padding:Theme.spacing.xl,
+borderBottomLeftRadius:Theme.radius.xl,
+borderBottomRightRadius:Theme.radius.xl
+}}>
+<Text style={{
+color:"white",
+fontSize:Theme.font.hero,
+fontWeight:"bold"
+}}>
+Install Solar & Save ☀️
+</Text>
 
-      {/* HEADING */}
-      <Text style={styles.heading}>Solar Schemes & Services</Text>
+<Text style={{
+color:"#ECFDF5",
+marginTop:Theme.spacing.sm,
+marginBottom:Theme.spacing.md
+}}>
+Government subsidy + EMI options make solar affordable.
+</Text>
 
-      {/* GOVT SCHEME */}
-      <SolarCard
-        icon={<MaterialCommunityIcons name="solar-power" size={28} color="#2563EB" />}
-        title="PM Surya Ghar Yojana"
-        desc="Get subsidy up to ₹78,000 on rooftop solar installation."
-        badge="Gov Subsidy"
-        buttonText="Apply Now"
-      />
+<TouchableOpacity style={{
+backgroundColor:Colors.accent,
+padding:Theme.spacing.md,
+borderRadius:Theme.radius.md,
+alignItems:"center"
+}}>
+<Text style={{color:"white",fontWeight:"bold"}}>
+Check Eligibility
+</Text>
+</TouchableOpacity>
+</View>
 
-      {/* FINANCE */}
-      <SolarCard
-        icon={<Ionicons name="flash" size={28} color="#16A34A" />}
-        title="Solar EMI Plan"
-        desc="Install solar with EMI starting ₹1500/month."
-        badge="Popular"
-        buttonText="Get Quote"
-      />
+{/* ⭐ SCHEMES */}
+<Text style={sectionTitle}>Solar Schemes & Services</Text>
 
-      {/* AMC */}
-      <SolarCard
-        icon={<Ionicons name="shield-checkmark" size={28} color="#F59E0B" />}
-        title="Solar AMC Maintenance"
-        desc="Panel cleaning, monitoring & breakdown support."
-        badge="Recommended"
-        buttonText="Buy AMC"
-      />
+<SolarCard
+icon={<MaterialCommunityIcons name="solar-power" size={28} color={Colors.secondary}/>}
+title="PM Surya Ghar Subsidy"
+desc="Get subsidy up to ₹78,000 for rooftop solar."
+badge="Gov Approved"
+/>
 
-      {/* WHY SOLAR */}
-      <Text style={styles.heading}>Why Install Solar?</Text>
+<SolarCard
+icon={<Ionicons name="card" size={26} color={Colors.blue}/>}
+title="Solar EMI Plan"
+desc="Install solar with EMI starting ₹1500/month."
+badge="Popular"
+/>
 
-      <View style={styles.infoCard}>
-        <Text>⚡ Save Huge Electricity Bills</Text>
-        <Text>🌱 Eco-Friendly Energy</Text>
-        <Text>🏠 Increase Property Value</Text>
-        <Text>🔋 Energy Independence</Text>
-      </View>
+<SolarCard
+icon={<Ionicons name="shield-checkmark" size={26} color={Colors.accent}/>}
+title="AMC Maintenance"
+desc="Cleaning, monitoring & priority breakdown support."
+badge="Recommended"
+/>
 
-      {/* FINAL CTA */}
-      <View style={styles.ctaBox}>
-        <Text style={styles.ctaText}>Ready to Install Solar?</Text>
+{/* ⭐ BENEFITS */}
+<Text style={sectionTitle}>Why Go Solar?</Text>
 
-        <TouchableOpacity style={styles.primaryBtn}>
-          <Text style={styles.btnText}>Register Solar Plant</Text>
-        </TouchableOpacity>
-        
-      </View>
+<View style={{
+flexDirection:"row",
+flexWrap:"wrap",
+justifyContent:"space-between"
+}}>
+<Benefit icon="flash" text="90% Bill Saving"/>
+<Benefit icon="leaf" text="Green Energy"/>
+<Benefit icon="home" text="Property Value"/>
+<Benefit icon="battery-charging" text="Backup Power"/>
+</View>
 
-    </ScrollView>
-  );
+{/* ⭐ TRUST */}
+<View style={{
+backgroundColor:"#ECFDF5",
+marginTop:Theme.spacing.lg,
+padding:Theme.spacing.lg,
+borderRadius:Theme.radius.lg,
+alignItems:"center"
+}}>
+<Text style={{
+fontWeight:"bold",
+fontSize:Theme.font.title
+}}>
+Trusted by 1200+ Solar Customers ⭐
+</Text>
+
+<Text style={{
+color:Colors.subText,
+marginTop:6,
+textAlign:"center"
+}}>
+Govt Approved Vendor • Fast Installation • 25 Year Warranty
+</Text>
+</View>
+
+<View style={{height:100}}/>
+
+</ScrollView>
+
+{/* ⭐ STICKY CTA */}
+<View style={{
+position:"absolute",
+bottom:15,
+width:"100%",
+alignItems:"center"
+}}>
+<TouchableOpacity style={{
+backgroundColor:Colors.blue,
+padding:Theme.spacing.lg,
+borderRadius:30,
+width:"90%",
+alignItems:"center"
+}}>
+<Text style={{color:"white",fontWeight:"bold"}}>
+Register Solar Plant
+</Text>
+</TouchableOpacity>
+</View>
+
+</View>
+);
 }
 
-/* ⭐ Reusable Modern Card */
-const SolarCard = ({ icon, title, desc, badge, buttonText }: any) => (
-  <View style={styles.modernCard}>
-    
-    <View style={styles.row}>
-      <View style={styles.iconBox}>{icon}</View>
+/* ⭐ SECTION TITLE */
+const sectionTitle = {
+fontSize:Theme.font.heading,
+fontWeight:"bold",
+marginTop:Theme.spacing.lg,
+marginBottom:Theme.spacing.sm
+};
 
-      <View style={{ flex: 1 }}>
-        <Text style={styles.cardTitle}>{title}</Text>
-        <Text style={styles.cardDesc}>{desc}</Text>
+/* ⭐ SOLAR CARD */
+const SolarCard = ({icon,title,desc,badge}:any)=>(
+<View style={GlobalStyles.card}>
 
-        {badge && (
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>{badge}</Text>
-          </View>
-        )}
-      </View>
-    </View>
+<View style={{flexDirection:"row"}}>
+<View style={{
+backgroundColor:"#ECFDF5",
+padding:12,
+borderRadius:Theme.radius.md,
+marginRight:10
+}}>
+{icon}
+</View>
 
-    <TouchableOpacity style={styles.cardBtn}>
-      <Text style={styles.cardBtnText}>{buttonText}</Text>
-    </TouchableOpacity>
+<View style={{flex:1}}>
+<Text style={{
+fontSize:Theme.font.title,
+fontWeight:"bold"
+}}>
+{title}
+</Text>
 
-  </View>
+<Text style={{
+color:Colors.subText,
+marginTop:4
+}}>
+{desc}
+</Text>
+
+<View style={{
+backgroundColor:"#DCFCE7",
+alignSelf:"flex-start",
+paddingHorizontal:10,
+paddingVertical:4,
+borderRadius:20,
+marginTop:6
+}}>
+<Text style={{
+color:Colors.secondary,
+fontWeight:"bold",
+fontSize:12
+}}>
+{badge}
+</Text>
+</View>
+
+</View>
+</View>
+
+<TouchableOpacity style={{
+backgroundColor:Colors.primary,
+marginTop:Theme.spacing.md,
+padding:Theme.spacing.sm,
+borderRadius:Theme.radius.md,
+alignItems:"center"
+}}>
+<Text style={{color:"white",fontWeight:"bold"}}>
+Apply Now
+</Text>
+</TouchableOpacity>
+
+</View>
 );
 
-/* ⭐ Styles */
-const styles = StyleSheet.create({
-  container:{
-    flex:1,
-    backgroundColor:"#F1F5F9"
-  },
-
-  hero:{
-    backgroundColor:"#2563EB",
-    padding:25
-  },
-
-  heroTitle:{
-    color:"white",
-    fontSize:26,
-    fontWeight:"bold",
-    marginBottom:6
-  },
-
-  heroSub:{
-    color:"white",
-    marginBottom:15
-  },
-
-  primaryBtn:{
-    backgroundColor:"#F59E0B",
-    padding:14,
-    borderRadius:10,
-    alignItems:"center"
-  },
-
-  btnText:{
-    color:"white",
-    fontWeight:"bold"
-  },
-
-  heading:{
-    fontSize:22,
-    fontWeight:"bold",
-    marginTop:22,
-    marginBottom:10,
-    paddingHorizontal:20
-  },
-
-  modernCard:{
-    backgroundColor:"white",
-    padding:18,
-    borderRadius:18,
-    marginHorizontal:20,
-    marginBottom:18,
-    shadowColor:"#000",
-    shadowOpacity:0.08,
-    shadowRadius:10,
-    elevation:4
-  },
-
-  row:{
-    flexDirection:"row",
-    alignItems:"center"
-  },
-
-  iconBox:{
-    backgroundColor:"#EEF2FF",
-    padding:12,
-    borderRadius:12,
-    marginRight:12
-  },
-
-  cardTitle:{
-    fontSize:18,
-    fontWeight:"bold",
-    marginBottom:4
-  },
-
-  cardDesc:{
-    color:"#6B7280"
-  },
-
-  badge:{
-    backgroundColor:"#DCFCE7",
-    alignSelf:"flex-start",
-    paddingHorizontal:10,
-    paddingVertical:4,
-    borderRadius:20,
-    marginTop:6
-  },
-
-  badgeText:{
-    color:"#16A34A",
-    fontWeight:"bold",
-    fontSize:12
-  },
-
-  cardBtn:{
-    backgroundColor:"#2563EB",
-    marginTop:15,
-    padding:12,
-    borderRadius:10,
-    alignItems:"center"
-  },
-
-  cardBtnText:{
-    color:"white",
-    fontWeight:"bold"
-  },
-
-  infoCard:{
-    backgroundColor:"white",
-    marginHorizontal:20,
-    padding:18,
-    borderRadius:12
-  },
-
-  ctaBox:{
-    padding:30,
-    alignItems:"center"
-  },
-
-  ctaText:{
-    fontSize:22,
-    fontWeight:"bold",
-    marginBottom:15
-  }
-});
+/* ⭐ BENEFIT */
+const Benefit = ({icon,text}:any)=>(
+<View style={{
+backgroundColor:"white",
+width:(width-60)/2,
+padding:Theme.spacing.lg,
+borderRadius:Theme.radius.lg,
+alignItems:"center",
+marginBottom:Theme.spacing.md
+}}>
+<Ionicons name={icon} size={26} color={Colors.secondary}/>
+<Text style={{
+marginTop:6,
+fontWeight:"600"
+}}>
+{text}
+</Text>
+</View>
+);

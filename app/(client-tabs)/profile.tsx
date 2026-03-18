@@ -1,67 +1,96 @@
+
 import React from "react";
 import {
 View,
 Text,
 ScrollView,
-StyleSheet,
-TouchableOpacity
+TouchableOpacity,
+Dimensions
 } from "react-native";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+
+import { Colors } from "../theme/colors";
+import { Theme } from "../theme/theme";
+import { GlobalStyles } from "../theme/globalStyles";
+
+const width = Dimensions.get("window").width;
 
 export default function Profile(){
 
 return(
 <View style={{flex:1}}>
 
-<ScrollView style={styles.container}>
+<ScrollView style={GlobalStyles.container}>
 
 {/* ⭐ PROFILE HEADER */}
-<View style={styles.header}>
-  <View style={styles.avatar}>
-    <Ionicons name="person" size={40} color="white"/>
-  </View>
-
-  <Text style={styles.name}>Demo Client</Text>
-  <Text style={styles.email}>demo@gmail.com</Text>
-
-  <View style={styles.badge}>
-    <Text style={{color:"white"}}>AMC Active</Text>
-  </View>
+<View style={{
+backgroundColor:Colors.primary,
+padding:Theme.spacing.xl,
+alignItems:"center",
+borderBottomLeftRadius:Theme.radius.xl,
+borderBottomRightRadius:Theme.radius.xl
+}}>
+<View style={{
+backgroundColor:Colors.blue,
+width:90,
+height:90,
+borderRadius:45,
+justifyContent:"center",
+alignItems:"center",
+marginBottom:Theme.spacing.sm
+}}>
+<Ionicons name="person" size={42} color="white"/>
 </View>
 
-{/* ⭐ QUICK ACTIONS */}
-<Text style={styles.heading}>Quick Actions</Text>
+<Text style={{
+color:"white",
+fontSize:Theme.font.hero,
+fontWeight:"bold"
+}}>
+Demo Client
+</Text>
 
-<View style={styles.row}>
+<Text style={{color:"#DCFCE7",marginTop:4}}>
+demo@gmail.com
+</Text>
 
-<ActionCard
-icon="solar-power"
-title="My Plants"
-/>
-
-<ActionCard
-icon="tools"
-title="Service Request"
-/>
-
-<ActionCard
-icon="file-document"
-title="Reports"
-/>
+<View style={{
+backgroundColor:Colors.secondary,
+paddingHorizontal:16,
+paddingVertical:6,
+borderRadius:20,
+marginTop:Theme.spacing.sm
+}}>
+<Text style={{color:"white"}}>AMC Active</Text>
+</View>
 
 </View>
 
-{/* ⭐ PLANT SUMMARY */}
-<Text style={styles.heading}>Plant Summary</Text>
+{/* ⭐ QUICK ACTION */}
+<Text style={sectionTitle}>Quick Actions</Text>
 
-<View style={styles.summary}>
-  <Text>Total Plants : 2</Text>
-  <Text>Total Capacity : 8kW</Text>
-  <Text>Last Service : 20 Feb 2026</Text>
+<View style={{
+flexDirection:"row",
+justifyContent:"space-between"
+}}>
+
+<ActionCard icon="solar-power" title="My Plants"/>
+<ActionCard icon="tools" title="Service"/>
+<ActionCard icon="file-document" title="Reports"/>
+
+</View>
+
+{/* ⭐ SUMMARY */}
+<Text style={sectionTitle}>Plant Summary</Text>
+
+<View style={GlobalStyles.card}>
+<Text>Total Plants : 2</Text>
+<Text style={{marginTop:6}}>Total Capacity : 8kW</Text>
+<Text style={{marginTop:6}}>Last Service : 20 Feb 2026</Text>
 </View>
 
 {/* ⭐ SETTINGS */}
-<Text style={styles.heading}>Settings</Text>
+<Text style={sectionTitle}>Settings</Text>
 
 <SettingItem icon="person-outline" text="Edit Profile"/>
 <SettingItem icon="call-outline" text="Contact Support"/>
@@ -72,120 +101,71 @@ title="Reports"
 
 </ScrollView>
 
-{/* ⭐ LOGOUT BUTTON */}
-<View style={styles.sticky}>
-  <TouchableOpacity style={styles.logout}>
-    <Text style={{color:"white",fontWeight:"bold"}}>
-      Logout
-    </Text>
-  </TouchableOpacity>
+{/* ⭐ LOGOUT CTA */}
+<View style={{
+position:"absolute",
+bottom:15,
+width:"100%",
+alignItems:"center"
+}}>
+<TouchableOpacity style={{
+backgroundColor:Colors.red,
+padding:Theme.spacing.lg,
+borderRadius:30,
+width:"90%",
+alignItems:"center"
+}}>
+<Text style={{color:"white",fontWeight:"bold"}}>
+Logout
+</Text>
+</TouchableOpacity>
 </View>
 
 </View>
 );
 }
 
+/* ⭐ SECTION TITLE */
+const sectionTitle = {
+fontSize:Theme.font.heading,
+fontWeight:"bold",
+marginTop:Theme.spacing.lg,
+marginBottom:Theme.spacing.sm
+};
+
 /* ⭐ ACTION CARD */
 const ActionCard = ({icon,title}:any)=>(
-<View style={styles.card}>
-  <MaterialCommunityIcons name={icon} size={28} color="#2563EB"/>
-  <Text style={{marginTop:8,fontWeight:"bold"}}>
-    {title}
-  </Text>
+<View style={{
+backgroundColor:"white",
+width:(width-60)/3,
+padding:Theme.spacing.lg,
+borderRadius:Theme.radius.lg,
+alignItems:"center",
+elevation:3
+}}>
+<MaterialCommunityIcons
+name={icon}
+size={28}
+color={Colors.blue}
+/>
+
+<Text style={{
+marginTop:8,
+fontWeight:"bold"
+}}>
+{title}
+</Text>
 </View>
 );
 
 /* ⭐ SETTING ITEM */
 const SettingItem = ({icon,text}:any)=>(
-<View style={styles.setting}>
-  <Ionicons name={icon} size={22}/>
-  <Text style={{marginLeft:15}}>{text}</Text>
+<View style={GlobalStyles.card}>
+<View style={{flexDirection:"row",alignItems:"center"}}>
+<Ionicons name={icon} size={22}/>
+<Text style={{marginLeft:15}}>
+{text}
+</Text>
+</View>
 </View>
 );
-
-/* ⭐ STYLES */
-
-const styles = StyleSheet.create({
-container:{flex:1,backgroundColor:"#F1F5F9"},
-
-header:{
-backgroundColor:"#2563EB",
-padding:30,
-alignItems:"center"
-},
-
-avatar:{
-backgroundColor:"#1E40AF",
-width:80,
-height:80,
-borderRadius:40,
-justifyContent:"center",
-alignItems:"center",
-marginBottom:10
-},
-
-name:{color:"white",fontSize:22,fontWeight:"bold"},
-email:{color:"white",marginTop:4},
-
-badge:{
-backgroundColor:"#16A34A",
-paddingHorizontal:15,
-paddingVertical:6,
-borderRadius:20,
-marginTop:10
-},
-
-heading:{
-fontSize:20,
-fontWeight:"bold",
-marginTop:20,
-marginBottom:10,
-paddingHorizontal:20
-},
-
-row:{
-flexDirection:"row",
-justifyContent:"space-around"
-},
-
-card:{
-backgroundColor:"white",
-padding:20,
-borderRadius:16,
-alignItems:"center",
-width:"28%",
-elevation:3
-},
-
-summary:{
-backgroundColor:"white",
-marginHorizontal:20,
-padding:15,
-borderRadius:12
-},
-
-setting:{
-backgroundColor:"white",
-marginHorizontal:20,
-padding:15,
-borderRadius:12,
-marginBottom:10,
-flexDirection:"row",
-alignItems:"center"
-},
-
-sticky:{
-position:"absolute",
-bottom:10,
-width:"100%",
-alignItems:"center"
-},
-
-logout:{
-backgroundColor:"#DC2626",
-padding:15,
-borderRadius:30,
-width:"90%",
-alignItems:"center"
-}
-});
