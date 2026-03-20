@@ -9,6 +9,8 @@ ScrollView
 } from "react-native";
 import { useState, useEffect } from "react";
 import { router } from "expo-router";
+import Screen from "../components/Screen";
+
 
 import { Colors } from "../theme/colors";
 import { Theme } from "../theme/theme";
@@ -118,8 +120,8 @@ Today's Generation : {p.generation}
 
 /* ⭐ LOGIN UI */
 return(
-<View style={GlobalStyles.container}>
 
+<Screen>
 <View style={{
 backgroundColor:Colors.primary,
 padding:Theme.spacing.xl,
@@ -185,7 +187,7 @@ Don't have Client ID? Register Solar Plant
 </TouchableOpacity>
 
 </View>
+</Screen>
 
-</View>
 );
 }

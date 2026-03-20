@@ -8,6 +8,8 @@ TouchableOpacity,
 Dimensions
 } from "react-native";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import Screen from "../components/Screen";
+
 
 import { Colors } from "../theme/colors";
 import { Theme } from "../theme/theme";
@@ -17,16 +19,24 @@ const width = Dimensions.get("window").width;
 
 export default function Schemes() {
 return (
-<View style={{flex:1}}>
 
-<ScrollView style={GlobalStyles.container}>
+ <Screen>
+
+<ScrollView
+showsVerticalScrollIndicator={false}
+contentContainerStyle={{
+paddingBottom:40,
+backgroundColor:Colors.background
+}}
+style={{backgroundColor:Colors.background}}
+>
 
 {/* ⭐ HERO */}
 <View style={{
 backgroundColor:Colors.primary,
 padding:Theme.spacing.xl,
-borderBottomLeftRadius:Theme.radius.xl,
-borderBottomRightRadius:Theme.radius.xl
+borderRadius:20,
+alignItems:"center"
 }}>
 <Text style={{
 color:"white",
@@ -141,8 +151,8 @@ Register Solar Plant
 </Text>
 </TouchableOpacity>
 </View>
+ </Screen>
 
-</View>
 );
 }
 

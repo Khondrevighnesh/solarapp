@@ -8,6 +8,8 @@ TouchableOpacity
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import Screen from "../components/Screen";
+
 
 import { Colors } from "../theme/colors";
 import { Theme } from "../theme/theme";
@@ -18,14 +20,21 @@ export default function Home(){
 const router = useRouter();
 
 return(
-<ScrollView style={GlobalStyles.container}>
 
+<Screen>
+<ScrollView
+showsVerticalScrollIndicator={false}
+contentContainerStyle={{
+paddingBottom:40,
+backgroundColor:Colors.background
+}}
+style={{backgroundColor:Colors.background}}
+>
 {/* ⭐ HERO SECTION */}
 <View style={{
 backgroundColor:Colors.primary,
 padding:Theme.spacing.xl,
-borderBottomLeftRadius:Theme.radius.xl,
-borderBottomRightRadius:Theme.radius.xl
+borderRadius:20,
 }}>
 
 <Text style={{
@@ -201,11 +210,13 @@ onPress={()=>router.push("/register-plant")}
 <Text style={{color:"white",fontWeight:"bold"}}>
 Book Free Consultation
 </Text>
-</TouchableOpacity>
+</TouchableOpacity> 
 
 </View>
 
 </ScrollView>
+</Screen>
+
 );
 }
 

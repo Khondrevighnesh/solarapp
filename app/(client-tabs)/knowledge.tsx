@@ -8,6 +8,8 @@ TouchableOpacity,
 Dimensions
 } from "react-native";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import Screen from "../components/Screen";
+
 
 import { Colors } from "../theme/colors";
 import { Theme } from "../theme/theme";
@@ -24,16 +26,24 @@ setOpenFaq(openFaq === i ? null : i);
 };
 
 return (
-<View style={{flex:1}}>
 
-<ScrollView style={GlobalStyles.container}>
+
+<Screen>
+
+<ScrollView
+showsVerticalScrollIndicator={false}
+contentContainerStyle={{
+paddingBottom:40,
+backgroundColor:Colors.background
+}}
+style={{backgroundColor:Colors.background}}
+>
 
 {/* ⭐ HERO */}
 <View style={{
 backgroundColor:Colors.primary,
 padding:Theme.spacing.xl,
-borderBottomLeftRadius:Theme.radius.xl,
-borderBottomRightRadius:Theme.radius.xl
+borderRadius:20,
 }}>
 <Text style={{
 color:"white",
@@ -45,7 +55,8 @@ Solar Learning Hub ☀️
 
 <Text style={{
 color:"#ECFDF5",
-marginTop:Theme.spacing.sm
+marginTop:Theme.spacing.sm,
+alignItems:"center"
 }}>
 Learn solar savings, system design & maintenance tips.
 </Text>
@@ -151,8 +162,8 @@ Talk to Solar Expert
 </Text>
 </TouchableOpacity>
 </View>
+</Screen>
 
-</View>
 );
 }
 
