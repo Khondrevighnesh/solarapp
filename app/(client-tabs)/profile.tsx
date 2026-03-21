@@ -270,16 +270,38 @@ Response within 10 minutes
 }
 
 /* ⭐ COMPONENTS */
-const SettingItem = ({icon,text,onPress}:any)=>(
-<TouchableOpacity onPress={onPress}>
-<View style={[GlobalStyles.card,{flexDirection:"row",justifyContent:"space-between"}]}>
-<View style={{flexDirection:"row",alignItems:"center"}}>
-<Ionicons name={icon} size={22} color={Colors.primary}/>
-<Text style={{marginLeft:15,fontWeight:"500"}}>{text}</Text>
-</View>
-<Ionicons name="chevron-forward" size={18} color="#9CA3AF"/>
-</View>
-</TouchableOpacity>
+const SettingItem = ({ icon, text, onPress }: any) => (
+  <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+    
+    <View style={[
+      GlobalStyles.card,
+      {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+
+        // ✅ FIX GAP
+        marginBottom: 6,        // ↓ reduced from 15
+        paddingVertical: 12     // ↓ slightly compact
+      }
+    ]}>
+      
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Ionicons name={icon} size={20} color={Colors.primary} />
+        
+        <Text style={{
+          marginLeft: 12,
+          fontWeight: "500"
+        }}>
+          {text}
+        </Text>
+      </View>
+
+      <Ionicons name="chevron-forward" size={16} color="#9CA3AF" />
+    
+    </View>
+
+  </TouchableOpacity>
 );
 
 const SocialBtn = ({icon,color,onPress}:any)=>(
@@ -311,8 +333,8 @@ elevation:2
 const sectionTitle = {
 fontSize:18,
 fontWeight:"bold",
-marginTop:20,
-marginBottom:10
+marginTop:13,
+marginBottom:6
 };
 
 const btnGreen = {

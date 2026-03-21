@@ -4,10 +4,15 @@ View,
 Text,
 ScrollView,
 TextInput,
-TouchableOpacity,
-StyleSheet
+TouchableOpacity
 } from "react-native";
+
 import { Ionicons } from "@expo/vector-icons";
+import Screen from "../components/Screen";
+
+import { Colors } from "../theme/colors";
+import { Theme } from "../theme/theme";
+import { GlobalStyles } from "../theme/globalStyles";
 
 export default function SolarSavings(){
 
@@ -22,10 +27,10 @@ const plantSize = Number(kw);
 
 if(!monthlyBill || !plantSize) return;
 
-// ⭐ REALISTIC SOLAR LOGIC (INDIA AVG)
+// ⭐ SOLAR LOGIC
+const unitGeneration = plantSize * 120;
+const savingPerUnit = 8;
 
-const unitGeneration = plantSize * 120; // units/month
-const savingPerUnit = 8; // ₹
 const monthlySaving = unitGeneration * savingPerUnit;
 const yearlySaving = monthlySaving * 12;
 
@@ -48,48 +53,100 @@ co2
 };
 
 return(
-<ScrollView style={styles.container}>
+<Screen>
 
-{/* HEADER */}
-<View style={styles.header}>
-<Text style={styles.title}>Solar Savings Calculator ☀️</Text>
-<Text style={styles.sub}>
+<ScrollView
+showsVerticalScrollIndicator={false}
+contentContainerStyle={{
+paddingBottom:Theme.spacing.xl
+}}
+>
+
+{/* ⭐ HEADER */}
+<View style={{
+backgroundColor:Colors.primary,
+padding:Theme.spacing.xl,
+borderRadius:Theme.radius.lg
+}}>
+
+<Text style={{
+color:"white",
+fontSize:Theme.font.hero,
+fontWeight:"bold"
+}}>
+Solar Savings Calculator ☀️
+</Text>
+
+<Text style={{
+color:"#ECFDF5",
+marginTop:Theme.spacing.sm
+}}>
 Estimate electricity bill reduction & solar ROI
 </Text>
+
 </View>
 
-{/* FORM */}
-<View style={styles.form}>
+{/* ⭐ FORM */}
+<View style={GlobalStyles.card}>
 
-<Text style={styles.label}>Monthly Electricity Bill (₹)</Text>
+<Text style={{fontWeight:"bold",marginTop:Theme.spacing.sm}}>
+Monthly Electricity Bill (₹)
+</Text>
+
 <TextInput
-style={styles.input}
+style={{
+backgroundColor:Colors.background,
+padding:Theme.spacing.md,
+borderRadius:Theme.radius.md,
+marginTop:5
+}}
 keyboardType="numeric"
 placeholder="Example 3000"
+placeholderTextColor={Colors.subText}
 value={bill}
 onChangeText={setBill}
 />
 
-<Text style={styles.label}>Solar Plant Size (kW)</Text>
+<Text style={{fontWeight:"bold",marginTop:Theme.spacing.md}}>
+Solar Plant Size (kW)
+</Text>
+
 <TextInput
-style={styles.input}
+style={{
+backgroundColor:Colors.background,
+padding:Theme.spacing.md,
+borderRadius:Theme.radius.md,
+marginTop:5
+}}
 keyboardType="numeric"
 placeholder="Example 3"
+placeholderTextColor={Colors.subText}
 value={kw}
 onChangeText={setKw}
 />
 
-<TouchableOpacity style={styles.btn} onPress={calculate}>
-<Text style={styles.btnText}>Calculate Savings</Text>
+<TouchableOpacity
+style={[GlobalStyles.button,{marginTop:Theme.spacing.lg}]}
+onPress={calculate}
+>
+<Text style={GlobalStyles.buttonText}>
+Calculate Savings
+</Text>
 </TouchableOpacity>
 
 </View>
 
-{/* RESULT */}
+{/* ⭐ RESULT */}
 {result && (
-<View style={styles.resultCard}>
+<View style={GlobalStyles.card}>
 
-<Text style={styles.resultTitle}>Estimated Benefits</Text>
+<Text style={{
+fontSize:Theme.font.heading,
+fontWeight:"bold",
+marginBottom:Theme.spacing.sm
+}}>
+Estimated Benefits 📊
+</Text>
 
 <ResultRow title="Monthly Saving" value={`₹ ${result.monthlySaving}`}/>
 <ResultRow title="Yearly Saving" value={`₹ ${result.yearlySaving}`}/>
@@ -99,8 +156,20 @@ onChangeText={setKw}
 <ResultRow title="Payback Period" value={`${result.payback} Years`}/>
 <ResultRow title="CO₂ Reduction" value={`${result.co2} Ton/Year`}/>
 
-<TouchableOpacity style={styles.cta}>
-<Text style={{color:"white",fontWeight:"bold"}}>
+{/* ⭐ CTA */}
+<TouchableOpacity
+style={{
+backgroundColor:Colors.accent,
+padding:14,
+borderRadius:Theme.radius.md,
+marginTop:Theme.spacing.md,
+alignItems:"center"
+}}
+>
+<Text style={{
+color:Colors.text,
+fontWeight:"bold"
+}}>
 Get Solar Quote
 </Text>
 </TouchableOpacity>
@@ -109,85 +178,26 @@ Get Solar Quote
 )}
 
 </ScrollView>
+</Screen>
 );
 }
 
-/* ROW COMPONENT */
+/* ⭐ ROW */
 const ResultRow = ({title,value}:any)=>(
-<View style={styles.row}>
-<Text>{title}</Text>
-<Text style={styles.bold}>{value}</Text>
-</View>
-);
-
-const styles = StyleSheet.create({
-
-container:{flex:1,backgroundColor:"#F1F5F9"},
-
-header:{
-backgroundColor:"#16A34A",
-padding:25,
-borderBottomLeftRadius:25,
-borderBottomRightRadius:25
-},
-
-title:{color:"white",fontSize:24,fontWeight:"bold"},
-sub:{color:"#ECFDF5",marginTop:5},
-
-form:{
-backgroundColor:"white",
-margin:20,
-padding:20,
-borderRadius:18,
-elevation:4
-},
-
-label:{fontWeight:"bold",marginTop:10},
-input:{
-backgroundColor:"#F3F4F6",
-padding:12,
-borderRadius:10,
-marginTop:5
-},
-
-btn:{
-backgroundColor:"#2563EB",
-padding:15,
-borderRadius:12,
-marginTop:20,
-alignItems:"center"
-},
-
-btnText:{color:"white",fontWeight:"bold"},
-
-resultCard:{
-backgroundColor:"white",
-marginHorizontal:20,
-padding:20,
-borderRadius:18,
-elevation:4
-},
-
-resultTitle:{
-fontSize:20,
-fontWeight:"bold",
-marginBottom:10
-},
-
-row:{
+<View style={{
 flexDirection:"row",
 justifyContent:"space-between",
 marginBottom:8
-},
+}}>
+<Text style={{color:Colors.subText}}>
+{title}
+</Text>
 
-bold:{fontWeight:"bold"},
-
-cta:{
-backgroundColor:"#F59E0B",
-padding:14,
-borderRadius:12,
-marginTop:15,
-alignItems:"center"
-}
-
-});
+<Text style={{
+fontWeight:"bold",
+color:Colors.text
+}}>
+{value}
+</Text>
+</View>
+);

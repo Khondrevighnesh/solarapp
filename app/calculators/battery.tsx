@@ -1,36 +1,146 @@
-import React,{useState} from "react";
-import {View,Text,TextInput,TouchableOpacity,StyleSheet} from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView
+} from "react-native";
 
-export default function Battery(){
+import Screen from "../components/Screen";
+import { Colors } from "../theme/colors";
+import { Theme } from "../theme/theme";
+import { GlobalStyles } from "../theme/globalStyles";
 
-const [load,setLoad]=useState("");
-const [backup,setBackup]=useState<any>(null);
+export default function Battery() {
 
-const calculate=()=>{
-const battery = (Number(load)*2).toFixed(1);
-setBackup(battery);
-};
+  const [load, setLoad] = useState("");
+  const [backup, setBackup] = useState<string | null>(null);
 
-return(
-<View style={s.container}>
-<Text style={s.title}>Battery Backup Calculator</Text>
+  const calculate = () => {
+    if (!load) return;
 
-<TextInput placeholder="Load kW" keyboardType="numeric" style={s.input} value={load} onChangeText={setLoad}/>
+    // ⭐ Improved Logic (Assuming 2 hours backup)
+    const battery = (Number(load) * 2).toFixed(1);
+    setBackup(battery);
+  };
 
-<TouchableOpacity style={s.btn} onPress={calculate}>
-<Text style={s.btnText}>Calculate</Text>
-</TouchableOpacity>
+  return (
+    <Screen>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingBottom: Theme.spacing.xl
+        }}
+      >
 
-{backup && <Text style={s.result}>Required Battery : {backup} kWh</Text>}
-</View>
-);
+        {/* ⭐ HEADER */}
+        <View style={{
+          backgroundColor: Colors.primary,
+          padding: Theme.spacing.xl,
+          borderRadius: Theme.radius.xl
+        }}>
+          <Text style={{
+            color: "white",
+            fontSize: Theme.font.hero,
+            fontWeight: "bold"
+          }}>
+            Battery Backup Calculator 🔋
+          </Text>
+
+          <Text style={{
+            color: "#DCFCE7",
+            marginTop: Theme.spacing.sm
+          }}>
+            Estimate required battery capacity for power backup
+          </Text>
+        </View>
+
+        {/* ⭐ FORM */}
+        <View style={[GlobalStyles.card, { marginTop: Theme.spacing.lg }]}>
+
+          <Text style={GlobalStyles.title}>
+            Enter Load Details
+          </Text>
+
+          <Text style={{ marginTop: Theme.spacing.sm }}>
+            Total Load (kW)
+          </Text>
+
+          <TextInput
+            placeholder="Example: 2"
+            keyboardType="numeric"
+            value={load}
+            onChangeText={setLoad}
+            style={{
+              backgroundColor: "#F3F4F6",
+              padding: 14,
+              borderRadius: Theme.radius.md,
+              marginTop: 5
+            }}
+          />
+
+          <TouchableOpacity
+            style={[
+              GlobalStyles.button,
+              { marginTop: Theme.spacing.lg }
+            ]}
+            onPress={calculate}
+          >
+            <Text style={GlobalStyles.buttonText}>
+              Calculate Battery
+            </Text>
+          </TouchableOpacity>
+
+        </View>
+
+        {/* ⭐ RESULT */}
+        {backup && (
+          <View style={GlobalStyles.card}>
+
+            <Text style={GlobalStyles.title}>
+              Battery Requirement
+            </Text>
+
+            <View style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              marginTop: Theme.spacing.md
+            }}>
+              <Text>Required Capacity</Text>
+              <Text style={{
+                fontWeight: "bold",
+                color: Colors.primary
+              }}>
+                {backup} kWh
+              </Text>
+            </View>
+
+            <View style={{
+              marginTop: Theme.spacing.sm
+            }}>
+              <Text style={{ color: Colors.subText }}>
+                *Calculated for approx 2 hours backup duration
+              </Text>
+            </View>
+
+            {/* ⭐ CTA */}
+            <TouchableOpacity style={{
+              backgroundColor: Colors.secondary,
+              padding: 14,
+              borderRadius: Theme.radius.md,
+              marginTop: Theme.spacing.lg,
+              alignItems: "center"
+            }}>
+              <Text style={{ color: "white", fontWeight: "bold" }}>
+                Get Battery Recommendation
+              </Text>
+            </TouchableOpacity>
+
+          </View>
+        )}
+
+      </ScrollView>
+    </Screen>
+  );
 }
-
-const s=StyleSheet.create({
-container:{flex:1,backgroundColor:"#F1F5F9",padding:20},
-title:{fontSize:22,fontWeight:"bold",marginBottom:20},
-input:{backgroundColor:"white",padding:15,borderRadius:10},
-btn:{backgroundColor:"#9333EA",padding:15,borderRadius:10,marginTop:20},
-btnText:{color:"white",textAlign:"center",fontWeight:"bold"},
-result:{marginTop:20,fontSize:18,fontWeight:"bold"}
-});

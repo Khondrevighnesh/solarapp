@@ -1,42 +1,159 @@
-import React, {useState} from "react";
-import {View,Text,TextInput,TouchableOpacity,StyleSheet} from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView
+} from "react-native";
+
+import Screen from "../components/Screen";
+
+import { Colors } from "../theme/colors";
+import { Theme } from "../theme/theme";
+import { GlobalStyles } from "../theme/globalStyles";
 
 export default function PlantSize(){
 
-const [bill,setBill]=useState("");
-const [size,setSize]=useState<any>(null);
+const [bill,setBill] = useState("");
+const [size,setSize] = useState<any>(null);
 
-const calculate=()=>{
-const kw = (Number(bill)/1200).toFixed(1);
-setSize(kw);
+const calculate = ()=>{
+  if(!bill) return;
+
+  const kw = (Number(bill)/1200).toFixed(1);
+  setSize(kw);
 };
 
 return(
-<View style={s.container}>
-<Text style={s.title}>Plant Size Calculator</Text>
+<Screen>
 
-<TextInput
-placeholder="Monthly Bill ₹"
-keyboardType="numeric"
-style={s.input}
-value={bill}
-onChangeText={setBill}
-/>
+<ScrollView
+showsVerticalScrollIndicator={false}
+contentContainerStyle={{
+  paddingBottom: Theme.spacing.xl
+}}
+>
 
-<TouchableOpacity style={s.btn} onPress={calculate}>
-<Text style={s.btnText}>Calculate</Text>
-</TouchableOpacity>
+{/* ⭐ HEADER */}
+<View style={{
+  backgroundColor: Colors.primary,
+  padding: Theme.spacing.xl,
+  borderRadius: Theme.radius.lg
+}}>
+  <Text style={{
+    color: "white",
+    fontSize: Theme.font.hero,
+    fontWeight: "bold"
+  }}>
+    Plant Size Calculator ⚡
+  </Text>
 
-{size && <Text style={s.result}>Recommended Size : {size} kW</Text>}
+  <Text style={{
+    color: "#ECFDF5",
+    marginTop: Theme.spacing.sm
+  }}>
+    Find the ideal solar system size based on your electricity bill
+  </Text>
 </View>
+
+{/* ⭐ FORM */}
+<View style={GlobalStyles.card}>
+
+  <Text style={{
+    fontWeight: "bold",
+    marginBottom: 5
+  }}>
+    Monthly Electricity Bill (₹)
+  </Text>
+
+  <TextInput
+    placeholder="Example: 3000"
+    placeholderTextColor={Colors.subText}
+    keyboardType="numeric"
+    value={bill}
+    onChangeText={setBill}
+    style={{
+      backgroundColor: Colors.background,
+      padding: Theme.spacing.md,
+      borderRadius: Theme.radius.md
+    }}
+  />
+
+  <TouchableOpacity
+    style={[GlobalStyles.button,{marginTop: Theme.spacing.lg}]}
+    onPress={calculate}
+  >
+    <Text style={GlobalStyles.buttonText}>
+      Calculate Size
+    </Text>
+  </TouchableOpacity>
+
+</View>
+
+{/* ⭐ RESULT */}
+{size && (
+<View style={GlobalStyles.card}>
+
+  <Text style={{
+    fontSize: Theme.font.heading,
+    fontWeight: "bold",
+    marginBottom: Theme.spacing.sm
+  }}>
+    Recommended System 📊
+  </Text>
+
+  <View style={{
+    backgroundColor: "#ECFDF5",
+    padding: Theme.spacing.md,
+    borderRadius: Theme.radius.md
+  }}>
+    <Text style={{
+      color: Colors.primary,
+      fontSize: Theme.font.title,
+      fontWeight: "bold"
+    }}>
+      {size} kW Solar Plant
+    </Text>
+
+    <Text style={{
+      color: Colors.subText,
+      marginTop: 5
+    }}>
+      Based on your monthly electricity usage
+    </Text>
+  </View>
+
+  {/* ⭐ EXTRA INSIGHTS */}
+  <View style={{marginTop: Theme.spacing.md}}>
+    <Insight label="Monthly Generation" value={`${(Number(size)*120).toFixed(0)} Units`} />
+    <Insight label="Estimated Saving" value={`₹ ${(Number(size)*120*8).toFixed(0)}`} />
+  </View>
+
+</View>
+)}
+
+</ScrollView>
+</Screen>
 );
 }
 
-const s=StyleSheet.create({
-container:{flex:1,backgroundColor:"#F1F5F9",padding:20},
-title:{fontSize:22,fontWeight:"bold",marginBottom:20},
-input:{backgroundColor:"white",padding:15,borderRadius:10},
-btn:{backgroundColor:"#2563EB",padding:15,borderRadius:10,marginTop:20},
-btnText:{color:"white",textAlign:"center",fontWeight:"bold"},
-result:{marginTop:20,fontSize:18,fontWeight:"bold"}
-});
+/* ⭐ INSIGHT ROW */
+const Insight = ({label,value}:any)=>(
+<View style={{
+  flexDirection:"row",
+  justifyContent:"space-between",
+  marginTop:6
+}}>
+  <Text style={{color: Colors.subText}}>
+    {label}
+  </Text>
+
+  <Text style={{
+    fontWeight:"bold",
+    color: Colors.text
+  }}>
+    {value}
+  </Text>
+</View>
+);

@@ -1,4 +1,3 @@
-
 import React from "react";
 import {
 View,
@@ -6,11 +5,11 @@ Text,
 ScrollView,
 TouchableOpacity
 } from "react-native";
+
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+
 import Screen from "../components/Screen";
-
-
 import { Colors } from "../theme/colors";
 import { Theme } from "../theme/theme";
 import { GlobalStyles } from "../theme/globalStyles";
@@ -20,8 +19,8 @@ export default function Home(){
 const router = useRouter();
 
 return(
-
 <Screen>
+
 <ScrollView
 showsVerticalScrollIndicator={false}
 contentContainerStyle={{
@@ -30,7 +29,8 @@ backgroundColor:Colors.background
 }}
 style={{backgroundColor:Colors.background}}
 >
-{/* ⭐ HERO SECTION */}
+
+{/* ⭐ HERO */}
 <View style={{
 backgroundColor:Colors.primary,
 padding:Theme.spacing.xl,
@@ -49,12 +49,12 @@ Reduce Electricity Bill by 90% ☀️
 color:"#ECFDF5",
 marginVertical:Theme.spacing.sm
 }}>
-Install rooftop solar with government subsidy & easy EMI.
+Install rooftop solar with subsidy & easy EMI plans.
 </Text>
 
 <TouchableOpacity
 style={GlobalStyles.button}
-onPress={()=>router.push("/register-plant")}
+onPress={()=>router.push("/dashboard/register")}
 >
 <Text style={GlobalStyles.buttonText}>
 Check Solar Feasibility
@@ -63,7 +63,9 @@ Check Solar Feasibility
 
 </View>
 
-{/* ⭐ SAVINGS GRAPH */}
+
+
+{/* ⭐ SAVINGS */}
 <View style={GlobalStyles.card}>
 
 <Text style={GlobalStyles.title}>
@@ -94,32 +96,21 @@ borderRadius:Theme.radius.sm
 
 </View>
 
-<View style={{
-flexDirection:"row",
-justifyContent:"space-between",
-marginTop:Theme.spacing.sm
-}}>
+<View style={{flexDirection:"row",justifyContent:"space-between",marginTop:10}}>
 <Text>Current Bill</Text>
-<Text style={{color:Colors.danger,fontWeight:"bold"}}>
-₹ 4000
-</Text>
+<Text style={{color:Colors.danger,fontWeight:"bold"}}>₹ 4000</Text>
 </View>
 
-<View style={{
-flexDirection:"row",
-justifyContent:"space-between"
-}}>
+<View style={{flexDirection:"row",justifyContent:"space-between"}}>
 <Text>After Solar</Text>
-<Text style={{color:Colors.secondary,fontWeight:"bold"}}>
-₹ 300
-</Text>
+<Text style={{color:Colors.secondary,fontWeight:"bold"}}>₹ 300</Text>
 </View>
 
 <Text style={{
 color:Colors.accent,
 fontSize:Theme.font.title,
 fontWeight:"bold",
-marginTop:Theme.spacing.sm
+marginTop:10
 }}>
 Yearly Saving ₹ 44,000
 </Text>
@@ -129,7 +120,7 @@ style={{
 backgroundColor:Colors.blue,
 padding:14,
 borderRadius:Theme.radius.md,
-marginTop:Theme.spacing.md,
+marginTop:15,
 alignItems:"center"
 }}
 onPress={()=>router.push("/calculators")}
@@ -141,37 +132,90 @@ Calculate Savings
 
 </View>
 
-{/* ⭐ BENEFITS */}
+{/* ⭐ SERVICES */}
 <View style={GlobalStyles.card}>
-<Text style={GlobalStyles.title}>Why Choose Solar?</Text>
+<Text style={GlobalStyles.title}>Our Services</Text>
 
-<Benefit text="25 Years Electricity Cost Protection"/>
-<Benefit text="Government Subsidy up to ₹78,000"/>
-<Benefit text="Increase Property Value"/>
-<Benefit text="Green & Clean Energy"/>
-<Benefit text="Low Maintenance Cost"/>
+
+<ServiceItem icon="build-outline" title="AMC Maintenance"/>
+<ServiceItem icon="analytics-outline" title="Monitoring System"/>
+<ServiceItem icon="cash-outline" title="Subsidy Assistance"/>
+
+</View>
+
+{/* ⭐ HOW IT WORKS */}
+<View style={GlobalStyles.card}>
+<Text style={GlobalStyles.title}>How It Works</Text>
+
+<StepItem step="1" text="Check solar feasibility"/>
+<StepItem step="2" text="Free site inspection"/>
+<StepItem step="3" text="Installation & net metering"/>
+<StepItem step="4" text="Track savings from app"/>
+
+</View>
+
+{/* ⭐ WHY US */}
+<View style={GlobalStyles.card}>
+<Text style={GlobalStyles.title}>Why Sustainify Energy?</Text>
+
+<Benefit text="Expert Solar Engineers"/>
+<Benefit text="End-to-End EPC + O&M"/>
+<Benefit text="Real-time Monitoring App"/>
+<Benefit text="Affordable AMC Plans"/>
+
+
+</View>
+
+{/* ⭐ APP VALUE */}
+<View style={GlobalStyles.card}>
+<Text style={GlobalStyles.title}>Track Your Solar System 📊</Text>
+
+<Text style={{marginTop:10,color:Colors.subText}}>
+Monitor generation, savings & performance in real-time.
+</Text>
+
+<TouchableOpacity
+style={GlobalStyles.button}
+onPress={()=>router.push("/dashboard")}
+>
+<Text style={GlobalStyles.buttonText}>
+View Demo Dashboard
+</Text>
+</TouchableOpacity>
 
 </View>
 
 {/* ⭐ TESTIMONIAL */}
-<View style={GlobalStyles.card}>
-<Text style={GlobalStyles.title}>Happy Solar Customers ⭐</Text>
 
-<Text style={{color:Colors.subText,marginTop:Theme.spacing.sm}}>
-“My bill reduced from ₹3500 to ₹200 after solar installation.”
+{/* ⭐ AMC CONVERSION */}
+<View style={{
+backgroundColor:"#FEF3C7",
+padding:Theme.spacing.lg,
+borderRadius:Theme.radius.lg,
+marginTop:Theme.spacing.lg
+}}>
+
+<Text style={{fontWeight:"bold",fontSize:16}}>
+Upgrade to AMC Anytime ⚡
 </Text>
 
-<Text style={{fontWeight:"bold",marginTop:5}}>
-— Rahul Patil, Pune
+<Text style={{marginTop:5}}>
+Keep your solar system running at peak efficiency with our maintenance plans.
 </Text>
 
-<Text style={{color:Colors.subText,marginTop:Theme.spacing.md}}>
-“Monitoring app helps track daily generation.”
+<TouchableOpacity
+style={{
+backgroundColor:Colors.primary,
+padding:12,
+borderRadius:10,
+marginTop:10,
+alignItems:"center"
+}}
+>
+<Text style={{color:"white",fontWeight:"bold"}}>
+Explore AMC Plans
 </Text>
-
-<Text style={{fontWeight:"bold",marginTop:5}}>
-— Sneha Kulkarni, Nashik
-</Text>
+</TouchableOpacity>
 
 </View>
 
@@ -180,7 +224,7 @@ Calculate Savings
 backgroundColor:Colors.blue,
 padding:Theme.spacing.lg,
 borderRadius:Theme.radius.lg,
-marginBottom:Theme.spacing.xl
+marginTop:Theme.spacing.xl
 }}>
 
 <Text style={{
@@ -193,9 +237,9 @@ Start Your Solar Journey Today
 
 <Text style={{
 color:"#DBEAFE",
-marginVertical:Theme.spacing.sm
+marginVertical:10
 }}>
-Book free site survey & get solar proposal.
+Book free consultation & get solar proposal.
 </Text>
 
 <TouchableOpacity
@@ -205,35 +249,61 @@ padding:14,
 borderRadius:Theme.radius.md,
 alignItems:"center"
 }}
-onPress={()=>router.push("/register-plant")}
+
+onPress={()=>router.push("/dashboard/register")}
 >
 <Text style={{color:"white",fontWeight:"bold"}}>
 Book Free Consultation
 </Text>
-</TouchableOpacity> 
+</TouchableOpacity>
 
 </View>
 
 </ScrollView>
 </Screen>
-
 );
 }
 
-/* ⭐ BENEFIT ROW */
-const Benefit = ({text}:any)=>(
-<View style={{
-flexDirection:"row",
-alignItems:"center",
-marginTop:6
-}}>
-<Ionicons
-name="checkmark-circle"
-size={20}
-color={Colors.primary}
-/>
-<Text style={{marginLeft:8}}>
-{text}
+/* ⭐ COMPONENTS */
+
+const TrustItem = ({title,subtitle}:any)=>(
+<View style={{alignItems:"center"}}>
+<Text style={{fontWeight:"bold",fontSize:16,color:Colors.primary}}>
+{title}
 </Text>
+<Text style={{fontSize:12,color:Colors.subText}}>
+{subtitle}
+</Text>
+</View>
+);
+
+const ServiceItem = ({icon,title}:any)=>(
+<View style={{flexDirection:"row",alignItems:"center",marginTop:8}}>
+<Ionicons name={icon} size={20} color={Colors.primary}/>
+<Text style={{marginLeft:10}}>{title}</Text>
+</View>
+);
+
+const StepItem = ({step,text}:any)=>(
+<View style={{flexDirection:"row",marginTop:8}}>
+<Text style={{
+backgroundColor:Colors.primary,
+color:"white",
+width:22,
+height:22,
+textAlign:"center",
+borderRadius:11,
+marginRight:10
+}}>
+{step}
+</Text>
+<Text>{text}</Text>
+</View>
+);
+
+const Benefit = ({text}:any)=>(
+<View style={{flexDirection:"row",marginTop:6}}>
+<Ionicons name="checkmark-circle" size={20} color={Colors.primary}/>
+<Text style={{marginLeft:8}}>{text}</Text>
 </View>
 );
