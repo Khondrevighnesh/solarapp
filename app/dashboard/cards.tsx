@@ -1,46 +1,98 @@
-import { View, Text, Button, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
+import Screen from "../components/Screen";
+import { Colors } from "../theme/colors";
+import { Theme } from "../theme/theme";
 
 export default function Cards() {
-  const { plantId }: any = useLocalSearchParams();
+  const { plantId, plantName }: any = useLocalSearchParams();
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>Plant Dashboard</Text>
-      <Text>Plant ID: {plantId}</Text>
+    <Screen>
+      <ScrollView style={{ flex: 1, backgroundColor: Colors.background }}>
 
-      <Button
-        title="Analytics"
-        onPress={() =>
-          router.push(`/dashboard/analytics?plantId=${plantId}`)
-        }
-      />
+        {/* 🔝 HEADER */}
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>
+            {plantName || "Solar Plant"} ☀️
+          </Text>
+          <Text style={styles.headerSubtitle}>
+            Live Performance Dashboard
+          </Text>
+        </View>
 
-      <Button
-        title="Maintenance"
-        onPress={() =>
-          router.push(`/dashboard/maintenance?plantId=${plantId}`)
-        }
-      />
+        {/* 🗂 DASHBOARD CARDS */}
+        <View style={styles.cardsContainer}>
 
-      <Button
-        title="Reports"
-        onPress={() =>
-          router.push(`/dashboard/reports?plantId=${plantId}`)
-        }
-      />
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => router.push(`/dashboard/analytics?plantId=${plantId}`)}
+          >
+            <Text style={styles.cardTitle}>Analytics</Text>
+          </TouchableOpacity>
 
-      <Button
-        title="Plant Details"
-        onPress={() =>
-          router.push(`/dashboard/plant-details?plantId=${plantId}`)
-        }
-      />
-    </View>
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => router.push(`/dashboard/maintenance?plantId=${plantId}`)}
+          >
+            <Text style={styles.cardTitle}>Maintenance</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => router.push(`/dashboard/reports?plantId=${plantId}`)}
+          >
+            <Text style={styles.cardTitle}>Reports</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => router.push(`/dashboard/plant-details?plantId=${plantId}`)}
+          >
+            <Text style={styles.cardTitle}>Plant Details</Text>
+          </TouchableOpacity>
+
+        </View>
+      </ScrollView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20 },
-  heading: { fontSize: 24, fontWeight: "bold", marginBottom: 20 }
+  header: {
+    backgroundColor: Colors.primary,
+    paddingTop: 60,
+    paddingBottom: 30,
+    paddingHorizontal: 20,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    marginBottom: 20,
+  },
+  headerTitle: {
+    color: "white",
+    fontSize: Theme.font.hero,
+    fontWeight: "bold",
+  },
+  headerSubtitle: {
+    color: "#DCFCE7",
+    marginTop: 6,
+    fontSize: Theme.font.heading,
+  },
+  cardsContainer: {
+    paddingHorizontal: 16,
+  },
+  card: {
+    backgroundColor: Colors.card,
+    padding: 20,
+    borderRadius: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    elevation: 3,
+  },
+  cardTitle: {
+    fontSize: Theme.font.title,
+    fontWeight: "bold",
+    color: Colors.primary,
+  },
 });

@@ -21,18 +21,23 @@ import { Colors } from "../theme/colors";
 import { Theme } from "../theme/theme";
 import { GlobalStyles } from "../theme/globalStyles";
 
+import { useAuth } from "../../context/AuthContext";
+
 export default function Profile() {
 
-const [name,setName] = useState("Demo Client");
-const [email] = useState("demo@gmail.com");
-const [phone,setPhone] = useState("9876543210");
+const { user, login, logout } = useAuth();
+
+/* 🔥 LOCAL STATE (SYNC WITH AUTH) */
+const [name,setName] = useState(user?.name || "");
+const [email] = useState(user?.email || "");
+const [phone,setPhone] = useState(user?.contact || "");
 const [image,setImage] = useState<string | null>(null);
 
 const [editModal,setEditModal] = useState(false);
 const [contactModal,setContactModal] = useState(false);
 const [policyModal,setPolicyModal] = useState(false);
 
-/* ⭐ IMAGE PICKER */
+/* 📸 IMAGE PICKER */
 const pickImage = async () => {
 const result = await ImagePicker.launchImageLibraryAsync({
 mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -41,20 +46,29 @@ quality: 1,
 if (!result.canceled) setImage(result.assets[0].uri);
 };
 
-/* ⭐ ACTIONS */
-const saveProfile = ()=>{
+/* 💾 SAVE PROFILE */
+const saveProfile = async () => {
+
+await login({
+  ...user,
+  name,
+  contact: phone
+});
+
 Alert.alert("Success","Profile Updated");
 setEditModal(false);
 };
 
+/* ☎ CONTACT */
 const submitContact = ()=>{
 Alert.alert("Submitted","Our solar expert will contact you shortly");
 setContactModal(false);
 };
 
+/* 🔗 SHARE */
 const shareApp = async () => {
 await Share.share({
-message: "Download Solar App 🌞 https://play.google.com/store/apps/details?id=com.umakant3525.PV_PROTECT&pcampaignid=web_share"
+message: "Download Solar App 🌞 https://play.google.com/store/apps/details?id=com.umakant3525.PV_PROTECT"
 });
 };
 
@@ -63,11 +77,7 @@ return(
 
 <ScrollView
 showsVerticalScrollIndicator={false}
-contentContainerStyle={{
-paddingBottom:40,
-backgroundColor:Colors.background
-}}
-style={{backgroundColor:Colors.background}}
+contentContainerStyle={{paddingBottom:40}}
 >
 
 {/* ⭐ HEADER */}
@@ -79,6 +89,7 @@ alignItems:"center"
 }}>
 
 <TouchableOpacity onPress={pickImage}>
+
 {image ? (
 <Image source={{uri:image}} style={{width:100,height:100,borderRadius:50}}/>
 ):(
@@ -90,26 +101,33 @@ borderRadius:50,
 justifyContent:"center",
 alignItems:"center"
 }}>
-<Ionicons name="camera" size={32} color="white"/>
+<Text style={{color:"white",fontSize:28,fontWeight:"bold"}}>
+{user?.name?.charAt(0) || "U"}
+</Text>
 </View>
 )}
+
 </TouchableOpacity>
 
 <Text style={{color:"white",fontSize:22,fontWeight:"bold",marginTop:10}}>
-{name}
+{user?.name || "User"}
 </Text>
 
-<Text style={{color:"#D1FAE5"}}>{email}</Text>
+<Text style={{color:"#D1FAE5"}}>
+{user?.email || "No email"}
+</Text>
 
 </View>
 
 {/* ⭐ ACCOUNT */}
 <Text style={sectionTitle}>Account</Text>
+
 <SettingItem icon="person-outline" text="Edit Profile" onPress={()=>setEditModal(true)}/>
 <SettingItem icon="shield-checkmark-outline" text="Privacy & Security" onPress={()=>setPolicyModal(true)}/>
 
 {/* ⭐ SUPPORT */}
 <Text style={sectionTitle}>Support</Text>
+
 <SettingItem icon="call-outline" text="Contact Support" onPress={()=>setContactModal(true)}/>
 <SettingItem icon="document-text-outline" text="Terms & Policy" onPress={()=>setPolicyModal(true)}/>
 
@@ -119,49 +137,34 @@ alignItems:"center"
 <SettingItem
 icon="star-outline"
 text="Rate App"
-onPress={()=>Linking.openURL("https://play.google.com/store/apps/details?id=com.umakant3525.PV_PROTECT&pcampaignid=web_share")}
+onPress={()=>Linking.openURL("https://play.google.com/store/apps/details?id=com.umakant3525.PV_PROTECT")}
 />
 
-<SettingItem
-icon="share-social-outline"
-text="Share App"
-onPress={shareApp}
-/>
+<SettingItem icon="share-social-outline" text="Share App" onPress={shareApp}/>
 
 <SettingItem
 icon="cloud-download-outline"
 text="Check for Updates"
 onPress={()=>Alert.alert("Up to Date","You are using latest version")}
- />
+/>
 
 <SettingItem
 icon="log-out-outline"
 text="Logout"
-onPress={()=>router.replace("/")}
+onPress={async ()=>{
+await logout();
+router.replace("/");
+}}
 />
 
-{/* ⭐ FOLLOW US */}
+{/* ⭐ FOLLOW */}
 <Text style={sectionTitle}>Follow Us</Text>
 
 <View style={{flexDirection:"row",justifyContent:"space-around",marginTop:10}}>
 
-<SocialBtn
-icon="logo-instagram"
-color="#E1306C"
-onPress={()=>Linking.openURL("https://www.instagram.com/sustainfyenergy/")}
-/>
-
-<SocialBtn
-icon="logo-facebook"
-color="#1877F2"
-onPress={()=>Linking.openURL("https://www.facebook.com/sustainfyenergy")}
-/>
-
-<SocialBtn
-icon="logo-linkedin"
-color="#0A66C2"
-onPress={()=>Linking.openURL("https://www.linkedin.com/company/sustainfy-energy-llp/")}
-/>
+<SocialBtn icon="logo-instagram" color="#E1306C" onPress={()=>Linking.openURL("https://www.instagram.com/sustainfyenergy/")}/>
+<SocialBtn icon="logo-facebook" color="#1877F2" onPress={()=>Linking.openURL("https://www.facebook.com/sustainfyenergy")}/>
+<SocialBtn icon="logo-linkedin" color="#0A66C2" onPress={()=>Linking.openURL("https://www.linkedin.com/company/sustainfy-energy-llp/")}/>
 
 </View>
 
@@ -169,7 +172,7 @@ onPress={()=>Linking.openURL("https://www.linkedin.com/company/sustainfy-energy-
 
 {/* ================= MODALS ================= */}
 
-{/* EDIT */}
+{/* ✏ EDIT */}
 <Modal visible={editModal} animationType="slide">
 <Screen>
 <ScrollView>
@@ -192,7 +195,7 @@ onPress={()=>Linking.openURL("https://www.linkedin.com/company/sustainfy-energy-
 </Screen>
 </Modal>
 
-{/* CONTACT */}
+{/* ☎ CONTACT */}
 <Modal visible={contactModal} animationType="slide">
 <Screen>
 <ScrollView>
@@ -219,15 +222,6 @@ Response within 10 minutes
 <SupportBtn icon="mail" text="Email" onPress={()=>Linking.openURL("mailto:support@solarapp.com")}/>
 </View>
 
-<Text style={{marginTop:20,fontWeight:"bold"}}>Raise Ticket</Text>
-
-<TextInput placeholder="Subject" style={GlobalStyles.card}/>
-<TextInput placeholder="Describe issue..." multiline style={[GlobalStyles.card,{height:120}]}/>
-
-<TouchableOpacity style={btnGreen} onPress={submitContact}>
-<Text style={btnText}>Submit</Text>
-</TouchableOpacity>
-
 <TouchableOpacity style={btnGray} onPress={()=>setContactModal(false)}>
 <Text>Close</Text>
 </TouchableOpacity>
@@ -236,7 +230,7 @@ Response within 10 minutes
 </Screen>
 </Modal>
 
-{/* POLICY */}
+{/* 📜 POLICY */}
 <Modal visible={policyModal} animationType="slide">
 <Screen>
 <ScrollView>
@@ -244,17 +238,7 @@ Response within 10 minutes
 <Text style={sectionTitle}>Terms & Policy</Text>
 
 <View style={GlobalStyles.card}>
-<Text style={{fontWeight:"bold"}}>1. Solar Installation</Text>
-<Text>Certified solar EPC & O&M services.</Text>
-
-<Text style={{fontWeight:"bold",marginTop:10}}>2. AMC</Text>
-<Text>Cleaning, monitoring & service included.</Text>
-
-<Text style={{fontWeight:"bold",marginTop:10}}>3. Data Privacy</Text>
-<Text>Data is encrypted & secure.</Text>
-
-<Text style={{fontWeight:"bold",marginTop:10}}>4. Warranty</Text>
-<Text>Panels: 25 years | Inverter: 5–10 years.</Text>
+<Text>Solar installation & AMC services with data privacy & warranty.</Text>
 </View>
 
 <TouchableOpacity style={btnGray} onPress={()=>setPolicyModal(false)}>
@@ -269,7 +253,8 @@ Response within 10 minutes
 );
 }
 
-/* ⭐ COMPONENTS */
+/* COMPONENTS */
+
 const SettingItem = ({ icon, text, onPress }: any) => (
   <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
     
@@ -291,7 +276,7 @@ const SettingItem = ({ icon, text, onPress }: any) => (
         
         <Text style={{
           marginLeft: 12,
-          fontWeight: "500"
+          fontWeight: "600"
         }}>
           {text}
         </Text>
@@ -308,8 +293,7 @@ const SocialBtn = ({icon,color,onPress}:any)=>(
 <TouchableOpacity onPress={onPress} style={{
 backgroundColor:"white",
 padding:15,
-borderRadius:50,
-elevation:3
+borderRadius:50
 }}>
 <Ionicons name={icon} size={22} color={color}/>
 </TouchableOpacity>
@@ -320,16 +304,16 @@ const SupportBtn = ({icon,text,onPress}:any)=>(
 backgroundColor:"white",
 width:"30%",
 padding:15,
-borderRadius:12,
-alignItems:"center",
-elevation:2
+borderRadius:6,
+alignItems:"center"
 }}>
 <Ionicons name={icon} size={22} color={Colors.primary}/>
 <Text style={{marginTop:5,fontSize:12}}>{text}</Text>
 </TouchableOpacity>
 );
 
-/* ⭐ COMMON */
+/* COMMON */
+
 const sectionTitle = {
 fontSize:18,
 fontWeight:"bold",

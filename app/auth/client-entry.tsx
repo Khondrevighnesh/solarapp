@@ -9,6 +9,7 @@ import {
   Platform,
   ScrollView
 } from "react-native";
+
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { router } from "expo-router";
@@ -16,9 +17,9 @@ import { router } from "expo-router";
 import Screen from "../components/Screen";
 import { Colors } from "../theme/colors";
 import { Theme } from "../theme/theme";
-import { GlobalStyles } from "../theme/globalStyles";
 
 export default function ClientEntry() {
+
   const { login } = useAuth();
 
   const [name, setName] = useState("");
@@ -29,7 +30,7 @@ export default function ClientEntry() {
   const [generatedOtp, setGeneratedOtp] = useState("");
   const [otpSent, setOtpSent] = useState(false);
 
-  /* ⭐ SEND OTP */
+  /* 📧 SEND OTP */
   const sendOtp = () => {
     if (!email) {
       Alert.alert("Error", "Enter email first");
@@ -43,8 +44,9 @@ export default function ClientEntry() {
     Alert.alert("OTP Sent 📧", `Use OTP: ${dummyOtp}`);
   };
 
-  /* ⭐ LOGIN */
-  const handleLogin = () => {
+  /* 🔐 LOGIN */
+  const handleLogin = async () => {
+
     if (!name || !contact || !email || !otp) {
       Alert.alert("Error", "Please fill all fields");
       return;
@@ -55,24 +57,37 @@ export default function ClientEntry() {
       return;
     }
 
-    if (email.includes("tech")) {
-      login("technician");
+    /* 🎯 ROLE LOGIC */
+    const role = email.includes("tech")
+      ? "technician"
+      : email.includes("paid")
+      ? "client"
+      : "free";
+
+    /* 💾 SAVE USER */
+    await login({
+      name,
+      email,
+      contact,
+      role
+    });
+
+    /* 🚀 NAVIGATION */
+    if (role === "technician") {
       router.replace("/(tech-tabs)/tasks");
-    } else if (email.includes("paid")) {
-      login("client");
-      router.replace("/(client-tabs)/home");
     } else {
-      login("free");
       router.replace("/(client-tabs)/home");
     }
   };
 
   return (
     <Screen>
+
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
+
         <ScrollView
           contentContainerStyle={{ flexGrow: 1, paddingBottom: 40 }}
           keyboardShouldPersistTaps="handled"
@@ -81,7 +96,7 @@ export default function ClientEntry() {
 
           <View style={styles.container}>
 
-            {/* ⭐ HERO HEADER */}
+            {/* 👋 HEADER */}
             <View style={styles.hero}>
               <Text style={styles.heroTitle}>Welcome 👋</Text>
               <Text style={styles.heroSub}>
@@ -89,34 +104,31 @@ export default function ClientEntry() {
               </Text>
             </View>
 
-            {/* ⭐ FORM CARD */}
+            {/* 💎 CARD */}
             <View style={styles.card}>
 
               <Text style={styles.cardTitle}>Login / Register</Text>
 
               {/* NAME */}
-              <InputField
-                label="Full Name"
-                value={name}
-                onChangeText={setName}
-              />
+              <Input label="Full Name" value={name} onChangeText={setName} />
 
               {/* MOBILE */}
-              <InputField
+              <Input
                 label="Mobile Number"
                 value={contact}
                 onChangeText={setContact}
                 keyboardType="phone-pad"
               />
 
-              {/* EMAIL + OTP BTN */}
-              <Text style={styles.label}>Email Address</Text>
+              {/* EMAIL */}
+              <Text style={styles.label}>Email</Text>
               <View style={styles.row}>
                 <TextInput
                   placeholder="Enter email"
-                  style={[styles.input, { flex: 1 }]}
                   value={email}
                   onChangeText={setEmail}
+                  style={[styles.input, { flex: 1 }]}
+                  placeholderTextColor="#94A3B8"
                 />
 
                 <TouchableOpacity style={styles.otpBtn} onPress={sendOtp}>
@@ -127,41 +139,43 @@ export default function ClientEntry() {
               </View>
 
               {/* OTP */}
-              <InputField
+              <Input
                 label="OTP"
                 value={otp}
                 onChangeText={setOtp}
                 keyboardType="number-pad"
               />
 
-              {/* LOGIN BUTTON */}
+              {/* BUTTON */}
               <TouchableOpacity style={styles.button} onPress={handleLogin}>
                 <Text style={styles.buttonText}>Continue</Text>
               </TouchableOpacity>
 
             </View>
 
-            {/* ⭐ FOOTER */}
-            <Text style={styles.footer}>
-              Powered by Sustainfy Energy Pvt Ltd ☀️
-            </Text>
-
           </View>
 
         </ScrollView>
+
       </KeyboardAvoidingView>
+
     </Screen>
   );
 }
 
-/* ⭐ REUSABLE INPUT */
-const InputField = ({ label, ...props }: any) => (
+/* 🔹 INPUT */
+const Input = ({ label, ...props }: any) => (
   <>
     <Text style={styles.label}>{label}</Text>
-    <TextInput {...props} style={styles.input} placeholderTextColor="#94A3B8" />
+    <TextInput
+      {...props}
+      style={styles.input}
+      placeholderTextColor="#94A3B8"
+    />
   </>
 );
 
+/* 🎨 STYLES */
 const styles = StyleSheet.create({
 
   container: {
@@ -170,7 +184,6 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
 
-  /* HERO */
   hero: {
     marginBottom: Theme.spacing.lg
   },
@@ -186,14 +199,12 @@ const styles = StyleSheet.create({
     marginTop: 5
   },
 
-  /* CARD */
   card: {
     backgroundColor: Colors.card,
     padding: Theme.spacing.lg,
     borderRadius: Theme.radius.xl,
     borderWidth: 1,
-    borderColor: Colors.border,
-    elevation: 3
+    borderColor: Colors.border
   },
 
   cardTitle: {
@@ -249,13 +260,6 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     fontSize: Theme.font.body
-  },
-
-  footer: {
-    textAlign: "center",
-    marginTop: Theme.spacing.lg,
-    color: Colors.subText,
-    fontSize: 12
   }
 
 });
