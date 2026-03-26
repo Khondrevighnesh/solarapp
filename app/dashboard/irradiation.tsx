@@ -47,11 +47,13 @@ export default function Irradiation() {
         <View
           style={{
             backgroundColor: Colors.primary,
-            paddingTop: 60,
+            paddingTop: 40,
             paddingBottom: 30,
             paddingHorizontal: 20,
             borderBottomLeftRadius: 30,
             borderBottomRightRadius: 30,
+            borderTopLeftRadius: 30,
+            borderTopRightRadius: 30,
           }}
         >
           <Text
@@ -68,7 +70,7 @@ export default function Irradiation() {
         </View>
 
         {/* 📊 KPI CARDS */}
-        <View style={{ padding: 16 }}>
+        <View style={{ marginTop: 10 }}>
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
@@ -89,7 +91,7 @@ export default function Irradiation() {
         </View>
 
         {/* 📈 GRAPH */}
-        <View style={[GlobalStyles.card, { margin: 16 }]}>
+        <View style={[GlobalStyles.card, { marginTop: 10 }]}>
           <Text
             style={{
               fontWeight: "bold",
@@ -122,7 +124,7 @@ export default function Irradiation() {
         </View>
 
         {/* 🌤 WEATHER IMPACT */}
-        <View style={[GlobalStyles.card, { marginHorizontal: 16 }]}>
+        <View style={[GlobalStyles.card, { marginTop: 10 }]}>
           <Text style={{ fontWeight: "bold" }}>Weather Impact</Text>
 
           <Text style={{ marginTop: 6 }}>Cloud Cover: Low ☀️</Text>
@@ -135,7 +137,7 @@ export default function Irradiation() {
         </View>
 
         {/* 📉 PERFORMANCE ANALYSIS */}
-        <View style={[GlobalStyles.card, { margin: 16 }]}>
+        <View style={[GlobalStyles.card, { marginTop: 10 }]}>
           <Text style={{ fontWeight: "bold" }}>Performance Analysis</Text>
 
           <Text style={{ marginTop: 6 }}>
@@ -150,7 +152,7 @@ export default function Irradiation() {
         </View>
 
         {/* 💡 INSIGHTS */}
-        <View style={[GlobalStyles.card, { marginHorizontal: 16 }]}>
+        <View style={[GlobalStyles.card, { marginTop: 10 }]}>
           <Text style={{ fontWeight: "bold" }}>Smart Insights</Text>
 
           <Text style={{ marginTop: 6 }}>

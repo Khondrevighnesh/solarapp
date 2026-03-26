@@ -103,7 +103,7 @@ export default function Generation() {
         <View
           style={{
             backgroundColor: Colors.primary,
-            paddingTop: 60,
+            paddingTop: 40,
             paddingBottom: 30,
             paddingHorizontal: 20,
             borderBottomLeftRadius: 30,
@@ -119,7 +119,7 @@ export default function Generation() {
               fontWeight: "bold",
             }}
           >
-            Solar Analytics ⚡
+            Solar Analytics
           </Text>
 
           <Text style={{ color: "#DCFCE7" }}>
@@ -154,7 +154,7 @@ export default function Generation() {
             style={{
               backgroundColor: "#FEF2F2",
               marginHorizontal: 16,
-              padding: 12,
+
               borderRadius: 12,
               borderWidth: 1,
               borderColor: "#FCA5A5",
@@ -173,7 +173,6 @@ export default function Generation() {
             margin: 16,
             backgroundColor: "#F1F5F9",
             borderRadius: 14,
-            padding: 4,
           }}
         >
           {["daily", "monthly", "yearly"].map((item) => (
@@ -202,12 +201,12 @@ export default function Generation() {
         {/* 📊 CHART WITH SCROLL (MAIN FIX) */}
         <View
           style={{
-            margin: 10,
             backgroundColor: "white",
             borderRadius: 20,
             paddingVertical: 16,
             borderWidth: 1,
             borderColor: "#E2E8F0",
+            marginBottom: 10,
           }}
         >
           <Text
@@ -272,7 +271,7 @@ export default function Generation() {
         </View>
 
         {/* WEATHER */}
-        <View style={[GlobalStyles.card, { marginHorizontal: 16 }]}>
+        <View style={[GlobalStyles.card, {}]}>
           <Text style={{ fontWeight: "bold" }}>Weather Impact</Text>
 
           {loadingWeather ? (
@@ -292,7 +291,7 @@ export default function Generation() {
         </View>
 
         {/* PERFORMANCE */}
-        <View style={[GlobalStyles.card, { margin: 12 }]}>
+        <View style={[GlobalStyles.card]}>
           <Text style={{ fontWeight: "bold" }}>Performance Analytics</Text>
 
           <Text>Expected: {Math.round(expected)} kWh</Text>

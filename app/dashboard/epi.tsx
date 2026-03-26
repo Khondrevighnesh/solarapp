@@ -66,6 +66,8 @@ export default function EPI() {
             paddingHorizontal: 20,
             borderBottomLeftRadius: 30,
             borderBottomRightRadius: 30,
+            borderTopLeftRadius: 30,
+            borderTopRightRadius: 30,
           }}
         >
           <Text
@@ -84,7 +86,7 @@ export default function EPI() {
         </View>
 
         {/* 📊 KPI */}
-        <View style={{ padding: 16 }}>
+        <View style={{ marginTop: 10 }}>
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
@@ -105,12 +107,12 @@ export default function EPI() {
         </View>
 
         {/* 🚨 STATUS */}
-        <View style={[GlobalStyles.card, { marginHorizontal: 16 }]}>
+        <View style={[GlobalStyles.card, { marginTop: 10 }]}>
           <Text style={{ fontWeight: "bold" }}>System Status</Text>
 
           <Text
             style={{
-              marginTop: 5,
+              marginTop: 10,
               color: status.includes("Excellent")
                 ? "green"
                 : status.includes("Average")
@@ -156,7 +158,7 @@ export default function EPI() {
         </View>
 
         {/* 📈 GRAPH */}
-        <View style={[GlobalStyles.card, { margin: 16 }]}>
+        <View style={[GlobalStyles.card, { marginTop: 10 }]}>
           <Text style={{ fontWeight: "bold", marginBottom: 10 }}>
             EPI Trend
           </Text>
@@ -184,10 +186,10 @@ export default function EPI() {
         </View>
 
         {/* 💡 INSIGHTS */}
-        <View style={[GlobalStyles.card, { marginHorizontal: 16 }]}>
+        <View style={[GlobalStyles.card, { marginTop: 10 }]}>
           <Text style={{ fontWeight: "bold" }}>Insights</Text>
 
-          <Text style={{ marginTop: 6 }}>
+          <Text style={{ marginTop: 8 }}>
             • EPI indicates plant efficiency per kW installed
           </Text>
 
@@ -196,7 +198,7 @@ export default function EPI() {
           <Text>• Maintain panels & monitor inverter health</Text>
         </View>
 
-        <View style={{ height: 40 }} />
+        <View style={{ height: 50 }} />
       </ScrollView>
     </Screen>
   );

@@ -8,7 +8,6 @@ import {
 
 import Screen from "../components/Screen";
 import { Colors } from "../theme/colors";
-import { Theme } from "../theme/theme";
 
 export default function PlantInfo() {
   const plant = {
@@ -43,16 +42,15 @@ export default function PlantInfo() {
           style={{
             backgroundColor: Colors.primary,
             paddingTop: 60,
-            paddingBottom: 30,
+            paddingBottom: 28,
             paddingHorizontal: 20,
-            borderBottomLeftRadius: 30,
-            borderBottomRightRadius: 30,
+            borderRadius: 30,
           }}
         >
           <Text
             style={{
               color: "white",
-              fontSize: 26,
+              fontSize: 24,
               fontWeight: "700",
             }}
           >
@@ -62,52 +60,56 @@ export default function PlantInfo() {
           <Text
             style={{
               color: "#DCFCE7",
-              marginTop: 6,
+              marginTop: 4,
             }}
           >
             Plant Information System
           </Text>
         </View>
 
-        {/* 🧾 OVERVIEW */}
+        {/* 📍 OVERVIEW */}
         <Section title="Overview">
-          <Info label="Plant Name" value={plant.name} />
+          <TableRow label="Plant Name" value={plant.name} bold />
 
           <TouchableOpacity onPress={() => Linking.openURL(plant.locationUrl)}>
-            <Info label="Site Location" value="View Location" highlight />
+            <TableRow label="Location" value="View on Map" highlight />
           </TouchableOpacity>
 
-          <Info label="Address" value={plant.address} />
-          <Info label="Contact" value={plant.contact} />
+          <TableRow label="Address" value={plant.address} />
+          <TableRow label="Contact" value={plant.contact} />
         </Section>
 
         {/* ⚙️ TECHNICAL */}
         <Section title="Technical Specifications">
-          <Info label="Modules" value={plant.modules} />
-          <Info label="Capacity" value={plant.capacity} />
-          <Info label="Strings" value={plant.strings} />
+          <TableRow label="Modules" value={plant.modules} />
+          <TableRow label="Capacity" value={plant.capacity} bold />
+          <TableRow label="Strings" value={plant.strings} />
 
           <Divider />
 
-          <Info label="Module Make" value={plant.moduleMake} />
-          <Info label="Module Type" value={plant.moduleType} />
+          <TableRow label="Module Make" value={plant.moduleMake} />
+          <TableRow label="Module Type" value={plant.moduleType} />
 
           <Divider />
 
-          <Info label="Inverter Make" value={plant.inverterMake} />
-          <Info label="Model" value={plant.inverterModel} />
-          <Info label="Serial No." value={plant.inverterSerial} />
-          <Info label="Inverter Capacity" value={plant.inverterCapacity} />
+          <TableRow label="Inverter Make" value={plant.inverterMake} />
+          <TableRow label="Model" value={plant.inverterModel} />
+          <TableRow label="Serial No." value={plant.inverterSerial} />
+          <TableRow
+            label="Inverter Capacity"
+            value={plant.inverterCapacity}
+            bold
+          />
 
           <Divider />
 
-          <Info label="Internet" value={plant.internet} />
+          <TableRow label="Internet" value={plant.internet} />
         </Section>
 
         {/* 📅 CONTRACT */}
         <Section title="Contract">
-          <Info label="Start Date" value={plant.contractStart} />
-          <Info label="End Date" value={plant.contractEnd} />
+          <TableRow label="Start Date" value={plant.contractStart} />
+          <TableRow label="End Date" value={plant.contractEnd} />
         </Section>
 
         <View style={{ height: 40 }} />
@@ -116,55 +118,79 @@ export default function PlantInfo() {
   );
 }
 
-/* 🔹 SECTION CARD */
+//////////////////////////////////////////////////////
+
+/* 🔷 SECTION CARD */
 const Section = ({ title, children }: any) => (
   <View
     style={{
       backgroundColor: "white",
-      marginHorizontal: 16,
+
       marginTop: 16,
-      padding: 18,
-      borderRadius: 18,
+      borderRadius: 16,
       borderWidth: 1,
-      borderColor: "#E5E7EB",
+      borderColor: "#E2E8F0",
+      overflow: "hidden",
     }}
   >
-    <Text
+    {/* Section Header */}
+    <View
       style={{
-        fontSize: 16,
-        fontWeight: "700",
-        marginBottom: 12,
+        paddingHorizontal: 16,
+        paddingVertical: 12,
+        backgroundColor: "#F8FAFC",
+        borderBottomWidth: 1,
+        borderColor: "#E2E8F0",
       }}
     >
-      {title}
-    </Text>
-    {children}
+      <Text
+        style={{
+          fontSize: 15,
+          fontWeight: "700",
+          color: Colors.text,
+        }}
+      >
+        {title}
+      </Text>
+    </View>
+
+    {/* Content */}
+    <View style={{ paddingHorizontal: 16 }}>{children}</View>
   </View>
 );
 
-/* 🔹 INFO ROW */
-const Info = ({ label, value, highlight }: any) => (
+//////////////////////////////////////////////////////
+
+/* 🔷 TABLE ROW */
+const TableRow = ({ label, value, highlight, bold }: any) => (
   <View
     style={{
       flexDirection: "row",
       justifyContent: "space-between",
-      paddingVertical: 8,
+      paddingVertical: 12,
+      borderBottomWidth: 1,
+      borderColor: "#F1F5F9",
     }}
   >
+    {/* LEFT */}
     <Text
       style={{
-        color: "#6B7280",
-        fontSize: 14,
+        color: "#64748B",
+        fontSize: 13,
+        flex: 1,
       }}
     >
       {label}
     </Text>
 
+    {/* RIGHT */}
     <Text
       style={{
-        fontWeight: "600",
-        fontSize: 14,
-        color: highlight ? Colors.primary : "#111827",
+        fontSize: 13,
+        fontWeight: bold ? "700" : "600",
+        color: highlight ? Colors.primary : "#0F172A",
+        flex: 1,
+        textAlign: "right",
       }}
     >
       {value}
@@ -172,13 +198,13 @@ const Info = ({ label, value, highlight }: any) => (
   </View>
 );
 
-/* 🔹 DIVIDER */
+//////////////////////////////////////////////////////
+
+/* 🔷 DIVIDER */
 const Divider = () => (
   <View
     style={{
-      height: 1,
-      backgroundColor: "#F1F5F9",
-      marginVertical: 10,
+      height: 8,
     }}
   />
 );

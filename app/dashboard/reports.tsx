@@ -26,7 +26,7 @@ const reports = [
 export default function Reports() {
   const [loading, setLoading] = useState(false);
 
-  /* 📥 GENERATE + DOWNLOAD REPORT */
+  /* 📥 GENERATE REPORT */
   const downloadReport = async (name: string) => {
     try {
       setLoading(true);
@@ -34,18 +34,20 @@ export default function Reports() {
       const fileUri = FileSystem.documentDirectory + `${name}.txt`;
 
       const content = `
-Solar Report - ${name}
+Solar Performance Report - ${name}
 
 Generation: 1200 kWh
 Savings: ₹9600
 CO₂ Saved: 850 kg
 Performance: 92%
 
-Thank you for using Solar App ☀️
+System Status: Healthy
+Weather Impact: Moderate ☀️
+
+Thank you for using Solar App ⚡
       `;
 
       await FileSystem.writeAsStringAsync(fileUri, content);
-
       await Sharing.shareAsync(fileUri);
     } catch (e) {
       console.log("Download error");
@@ -64,8 +66,7 @@ Thank you for using Solar App ☀️
             paddingTop: 60,
             paddingBottom: 30,
             paddingHorizontal: 20,
-            borderBottomLeftRadius: 30,
-            borderBottomRightRadius: 30,
+            borderRadius: 30,
           }}
         >
           <Text
@@ -79,73 +80,134 @@ Thank you for using Solar App ☀️
           </Text>
 
           <Text style={{ color: "#DCFCE7" }}>
-            Download plant performance reports
+            Plant performance & analytics reports
           </Text>
         </View>
 
         {/* ⚡ QUICK REPORTS */}
-        <View style={{ padding: 16 }}>
+        <View style={{ marginTop: 10 }}>
           <Text
             style={{
               fontSize: Theme.font.heading,
               fontWeight: "bold",
-              marginBottom: 10,
+              marginBottom: 12,
             }}
           >
             Quick Reports
           </Text>
 
           <TouchableOpacity
-            style={styles.button}
+            style={styles.primaryBtn}
             onPress={() => downloadReport("Monthly_Report")}
           >
-            <Text style={styles.buttonText}>Download Monthly Report</Text>
+            <Text style={styles.btnText}>📊 Download Monthly Report</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.button}
+            style={styles.secondaryBtn}
             onPress={() => downloadReport("Yearly_Report")}
           >
-            <Text style={styles.buttonText}>Download Yearly Report</Text>
+            <Text style={styles.secondaryText}>📈 Download Yearly Report</Text>
           </TouchableOpacity>
         </View>
 
         {/* 📋 REPORT HISTORY */}
-        <View style={{ paddingHorizontal: 16 }}>
+        <View style={{ marginTop: 10 }}>
           <Text
             style={{
               fontSize: Theme.font.heading,
               fontWeight: "bold",
-              marginBottom: 10,
+              marginBottom: 12,
             }}
           >
             Report History
           </Text>
 
           {reports.map((item) => (
-            <View
-              key={item.id}
-              style={[GlobalStyles.card, { marginBottom: 12 }]}
-            >
+            <View key={item.id} style={styles.reportCard}>
               <View
                 style={{
                   flexDirection: "row",
                   justifyContent: "space-between",
+                  alignItems: "center",
                 }}
               >
-                <Text style={{ fontWeight: "bold" }}>{item.month}</Text>
+                <View>
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      fontSize: 15,
+                    }}
+                  >
+                    {item.month}
+                  </Text>
 
-                <Text style={{ color: "green" }}>{item.status}</Text>
+                  <Text
+                    style={{
+                      color: Colors.subText,
+                      marginTop: 4,
+                    }}
+                  >
+                    Performance Report
+                  </Text>
+                </View>
+
+                <Text
+                  style={{
+                    color: Colors.primary,
+                    fontWeight: "600",
+                  }}
+                >
+                  {item.status}
+                </Text>
               </View>
 
               <TouchableOpacity
-                style={styles.smallBtn}
+                style={styles.downloadBtn}
                 onPress={() => downloadReport(item.month)}
               >
-                <Text style={{ color: "white" }}>Download</Text>
+                <Text style={{ color: "white", fontWeight: "600" }}>
+                  Download
+                </Text>
               </TouchableOpacity>
             </View>
           ))}
+        </View>
+
+        {/* 💡 INSIGHTS (BOTTOM SECTION) */}
+        <View
+          style={[
+            GlobalStyles.card,
+            {
+              marginTop: 10,
+              borderRadius: 20,
+            },
+          ]}
+        >
+          <Text
+            style={{
+              fontSize: Theme.font.heading,
+              fontWeight: "bold",
+            }}
+          >
+            Insights
+          </Text>
+
+          <Text style={styles.insightText}>
+            • Your plant generated 12% more energy this month 📈
+          </Text>
+
+          <Text style={styles.insightText}>
+            • Performance remains stable across last 3 months
+          </Text>
+
+          <Text style={styles.insightText}>
+            • Weather conditions supported higher efficiency ☀️
+          </Text>
+
+          <Text style={styles.insightText}>
+            • Recommended: Panel cleaning to maintain output
+          </Text>
         </View>
 
         {/* ⏳ LOADING */}
@@ -165,24 +227,51 @@ Thank you for using Solar App ☀️
 
 /* 🎨 STYLES */
 const styles = {
-  button: {
+  primaryBtn: {
     backgroundColor: Colors.primary,
     padding: 16,
-    borderRadius: 14,
+    borderRadius: 16,
     alignItems: "center",
     marginBottom: 10,
   },
 
-  buttonText: {
+  secondaryBtn: {
+    borderWidth: 1,
+    borderColor: Colors.primary,
+    padding: 16,
+    borderRadius: 16,
+    alignItems: "center",
+  },
+
+  btnText: {
     color: "white",
     fontWeight: "bold",
   },
 
-  smallBtn: {
-    marginTop: 10,
+  secondaryText: {
+    color: Colors.primary,
+    fontWeight: "bold",
+  },
+
+  reportCard: {
+    backgroundColor: "white",
+    padding: 16,
+    borderRadius: 18,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+  },
+
+  downloadBtn: {
+    marginTop: 12,
     backgroundColor: Colors.primary,
-    padding: 10,
-    borderRadius: 10,
+    padding: 12,
+    borderRadius: 12,
     alignItems: "center",
+  },
+
+  insightText: {
+    marginTop: 8,
+    color: Colors.subText,
   },
 };

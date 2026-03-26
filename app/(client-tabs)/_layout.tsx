@@ -24,7 +24,7 @@ export default function ClientTabs() {
       <Tabs.Screen
         name="calculators"
         options={{
-          title: "Calc",
+          title: "Calculators",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="calculator" color={color} size={size} />
           ),
@@ -44,7 +44,7 @@ export default function ClientTabs() {
       <Tabs.Screen
         name="document"
         options={{
-          title: "Docs",
+          title: "Document",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="book" color={color} size={size} />
           ),
@@ -70,10 +70,9 @@ export default function ClientTabs() {
           ),
         }}
       />
-       
+
       <Tabs.Screen name="plants/index" options={{ href: null }} />
       <Tabs.Screen name="plants/cards" options={{ href: null }} />
-      
     </Tabs>
   );
 }
