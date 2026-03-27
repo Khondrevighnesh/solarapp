@@ -1,86 +1,68 @@
+// data/plants.ts
+
 export const plants = [
   {
-    id: "1",
-    name: "10kW Pune Plant",
-    capacity: "10kW",
+    id: 1,
+    name: "Pune Solar Plant",
     location: "Pune",
-    generation: [20, 35, 28, 50, 60]
+    status: "Active",
+    capacity: "10 kW",
+    today: 18,
+    mtd: 520,
+    efficiency: 92,
+    savings: 4160,
+    generation: [20, 35, 28, 50, 60],
+    cleaning: { done: 18, total: 24 },
+    reports: 12,
+    irradiation: "High",
+    epi: 0.92,
   },
   {
-    id: "2",
-    name: "5kW Nashik Plant",
-    capacity: "5kW",
-    location: "Nashik",
-    generation: [10, 18, 22, 30, 25]
-  },
-  {
-    id: "3",
-    name: "15kW Mumbai Rooftop",
-    capacity: "15kW",
+    id: 2,
+    name: "Mumbai Solar Plant",
     location: "Mumbai",
-    generation: [40, 55, 60, 72, 68]
+    status: "Active",
+    capacity: "5 kW",
+    today: 12,
+    mtd: 300,
+    efficiency: 88,
+    savings: 2600,
+    generation: [10, 18, 22, 30, 40],
+    cleaning: { done: 10, total: 20 },
+    reports: 8,
+    irradiation: "Medium",
+    epi: 0.88,
   },
   {
-    id: "4",
-    name: "25kW Industrial Plant",
-    capacity: "25kW",
-    location: "Chakan",
-    generation: [80, 95, 100, 120, 110]
-  },
-  {
-    id: "5",
-    name: "8kW Residential Solar",
-    capacity: "8kW",
-    location: "Pimpri",
-    generation: [15, 22, 30, 35, 32]
-  },
-  {
-    id: "6",
-    name: "50kW Solar Farm",
-    capacity: "50kW",
-    location: "Solapur",
-    generation: [150, 170, 180, 200, 195]
-  },
-  {
-    id: "7",
-    name: "12kW Smart Plant",
-    capacity: "12kW",
-    location: "Satara",
-    generation: [28, 35, 40, 52, 48]
-  },
-  {
-    id: "8",
-    name: "20kW Green Energy Plant",
-    capacity: "20kW",
-    location: "Kolhapur",
-    generation: [60, 75, 82, 95, 90]
-  },
-  {
-    id: "9",
-    name: "30kW Factory Solar",
-    capacity: "30kW",
-    location: "Aurangabad",
-    generation: [95, 110, 120, 140, 135]
-  },
-  {
-    id: "10",
-    name: "18kW Solar Edge Unit",
-    capacity: "18kW",
+    id: 3,
+    name: "Nagpur Solar Plant",
     location: "Nagpur",
-    generation: [50, 65, 70, 85, 80]
+    status: "Active",
+    capacity: "8 kW",
+    today: 15,
+    mtd: 420,
+    efficiency: 90,
+    savings: 3500,
+    generation: [15, 20, 25, 40, 55],
+    cleaning: { done: 12, total: 18 },
+    reports: 10,
+    irradiation: "High",
+    epi: 0.90,
   },
   {
-    id: "11",
-    name: "40kW Mega Solar Hub",
-    capacity: "40kW",
-    location: "Ahmednagar",
-    generation: [120, 140, 155, 170, 165]
+    id: 4,
+    name: "Delhi Solar Plant",
+    location: "Delhi",
+    status: "Active",
+    capacity: "12 kW",
+    today: 20,
+    mtd: 600,
+    efficiency: 94,
+    savings: 5000,
+    generation: [25, 30, 35, 55, 65],
+    cleaning: { done: 20, total: 25 },
+    reports: 15,
+    irradiation: "High",
+    epi: 0.94,
   },
-  {
-    id: "12",
-    name: "6kW Home Solar",
-    capacity: "6kW",
-    location: "Lonavala",
-    generation: [12, 18, 20, 28, 25]
-  }
 ];

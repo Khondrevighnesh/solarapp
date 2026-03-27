@@ -10,10 +10,12 @@ import {
   BackHandler,
 } from "react-native";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { router, useFocusEffect } from "expo-router";
+
 import Screen from "../components/Screen";
 import { useAuth } from "../../context/AuthContext";
+import { clients } from "../../data/clients";
 
 import { Colors } from "../theme/colors";
 import { Theme } from "../theme/theme";
@@ -22,49 +24,61 @@ export default function Dashboard() {
   const [clientId, setClientId] = useState("");
   const [password, setPassword] = useState("");
 
-  /* 🔥 DEMO USERS */
-  const demoUsers: any = {
-    solar123: {
-      pass: "1234",
-      name: "Demo Client",
-      plants: [
-        { id: 1, name: "Pune Plant", generation: "18 kWh" },
-        { id: 2, name: "Mumbai Plant", generation: "25 kWh" },
-      ],
-    },
-    plant456: {
-      pass: "4567",
-      name: "Single Plant Owner",
-      plants: [{ id: 3, name: "Nagpur Plant", generation: "12 kWh" }],
-    },
-  };
+  const { user, login } = useAuth();
 
-  const { login } = useAuth();
+  /* 🚀 REDIRECT FUNCTION */
+  const redirectUser = () => {
+    if (!user?.plants) return;
 
-  /* 🔐 LOGIN */
-  const handleLogin = async () => {
-    const user = demoUsers[clientId];
-
-    if (user && user.pass === password) {
-      await login({
-        name: user.name,
-        email: clientId + "@solar.com",
-        plants: user.plants,
+    if (user.plants.length === 1) {
+      router.replace({
+        pathname: "/plants/cards",
+        params: { plantId: user.plants[0].id },
       });
-
-      if (user.plants.length === 1) {
-        router.replace(
-          `/plants/cards?plantId=${user.plants[0].id}&name=${user.plants[0].name}`,
-        );
-      } else {
-        router.replace("/plants");
-      }
     } else {
-      Alert.alert("Invalid Login");
+      router.replace("/plants/plant");
     }
   };
 
-  /* 🔙 ANDROID BACK FIX */
+  /* 🔐 LOGIN */
+  const handleLogin = async () => {
+    const client = clients.find(
+      (c) => c.id === clientId && c.password === password,
+    );
+
+    if (!client) {
+      Alert.alert("Invalid Login");
+      return;
+    }
+
+    await login({
+      name: client.name,
+      email: clientId + "@solar.com",
+      plants: client.plants,
+      role: "client",
+    });
+
+    // ✅ redirect immediately after login
+    if (client.plants.length === 1) {
+      router.replace({
+        pathname: "/plants/cards",
+        params: { plantId: client.plants[0].id },
+      });
+    } else {
+      router.replace("/plants/plant");
+    }
+  };
+
+  /* 🔥 CRITICAL FIX: ALWAYS REDIRECT ON TAB FOCUS */
+  useFocusEffect(
+    useCallback(() => {
+      if (user?.role === "client") {
+        redirectUser(); // ✅ ALWAYS redirect
+      }
+    }, [user]),
+  );
+
+  /* 🔙 BACK BUTTON */
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => {
@@ -75,15 +89,29 @@ export default function Dashboard() {
         return true;
       };
 
-      const subscription = BackHandler.addEventListener(
+      const sub = BackHandler.addEventListener(
         "hardwareBackPress",
         onBackPress,
       );
 
-      return () => subscription.remove();
+      return () => sub.remove();
     }, []),
   );
 
+  /* ✅ IMPORTANT: SHOW NOTHING FOR CLIENT */
+  if (user?.role === "client") {
+    return (
+      <Screen>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text>Redirecting...</Text>
+        </View>
+      </Screen>
+    );
+  }
+
+  /* 🔓 LOGIN UI (ONLY FOR NOT LOGGED USERS) */
   return (
     <Screen>
       <KeyboardAvoidingView
@@ -96,31 +124,16 @@ export default function Dashboard() {
             justifyContent: "center",
             padding: 20,
           }}
-          keyboardShouldPersistTaps="handled"
         >
-          {/* 🟢 Header */}
           <View style={{ marginBottom: 30 }}>
-            <Text
-              style={{
-                fontSize: 28,
-                fontWeight: "bold",
-                color: Colors.text,
-              }}
-            >
+            <Text style={{ fontSize: 28, fontWeight: "bold" }}>
               Welcome Back 👋
             </Text>
-
-            <Text
-              style={{
-                color: Colors.subText,
-                marginTop: 6,
-              }}
-            >
-              Manage your solar plants easily
+            <Text style={{ color: Colors.subText }}>
+              Manage your solar plants
             </Text>
           </View>
 
-          {/* 🧾 Login Card */}
           <View
             style={{
               backgroundColor: Colors.card,
@@ -128,11 +141,6 @@ export default function Dashboard() {
               borderRadius: 20,
               borderWidth: 1,
               borderColor: Colors.border,
-
-              shadowColor: "#000",
-              shadowOpacity: 0.05,
-              shadowRadius: 10,
-              elevation: 3,
             }}
           >
             <Text
@@ -140,19 +148,9 @@ export default function Dashboard() {
                 fontSize: Theme.font.heading,
                 fontWeight: "bold",
                 marginBottom: 10,
-                color: Colors.text,
               }}
             >
               Client Login
-            </Text>
-
-            <Text
-              style={{
-                color: Colors.subText,
-                marginBottom: 16,
-              }}
-            >
-              Enter your credentials
             </Text>
 
             <TextInput
@@ -173,22 +171,7 @@ export default function Dashboard() {
             />
 
             <TouchableOpacity onPress={handleLogin} style={styles.button}>
-              <Text style={styles.btnText}>Login</Text>
-            </TouchableOpacity>
-
-            {/* 🔗 Register Link */}
-            <TouchableOpacity
-              onPress={() => router.push("/dashboard/register")}
-              style={{ marginTop: 18, alignItems: "center" }}
-            >
-              <Text
-                style={{
-                  color: Colors.primary,
-                  fontWeight: "600",
-                }}
-              >
-                Don't have a plant? Register your plant →
-              </Text>
+              <Text style={{ color: "#fff", fontWeight: "bold" }}>Login</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -210,13 +193,8 @@ const styles = {
   button: {
     backgroundColor: Colors.primary,
     padding: 16,
-    borderRadius: 14,
+    borderRadius: 12,
     alignItems: "center",
     marginTop: 10,
-  },
-  btnText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
   },
 };

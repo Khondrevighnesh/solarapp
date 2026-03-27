@@ -1,16 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Dimensions,
+  TextInput,
+} from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import * as Location from "expo-location";
+import { BarChart } from "react-native-chart-kit";
 
 import Screen from "../components/Screen";
 import { Colors } from "../theme/colors";
 import { Theme } from "../theme/theme";
 import { useAuth } from "../../context/AuthContext";
 
-/* ⏰ GREETING */
+const screenWidth = Dimensions.get("window").width;
+
 const getGreeting = () => {
   const hour = new Date().getHours();
   if (hour < 12) return "Good Morning ☀️";
@@ -19,394 +28,269 @@ const getGreeting = () => {
 };
 
 export default function Home() {
-  const router = useRouter();
   const { user } = useAuth();
+  const router = useRouter();
 
-  const greeting = getGreeting();
-  const userName = user?.name?.split(" ")[0] || "User";
-
-  /* 📍 LOCATION */
   const [city, setCity] = useState("Fetching...");
+  const [openFAQ, setOpenFAQ] = useState<number | null>(null);
+
+  const [bill, setBill] = useState("");
+  const [solarSize, setSolarSize] = useState("");
+  const [showResult, setShowResult] = useState(false);
+
+  const monthlyBill = Number(bill) || 0;
+  const size = Number(solarSize) || 0;
+
+  const solarBill = Math.max(monthlyBill * 0.1, 300);
+  const monthlySaving = monthlyBill - solarBill;
+  const yearlySaving = monthlySaving * 12;
+
+  const dirtyLossM = Math.round(monthlySaving * 0.08);
+  const maintenanceLossM = Math.round(monthlySaving * 0.05);
+  const monitoringLossM = Math.round(monthlySaving * 0.04);
+
+  const totalLossM = dirtyLossM + maintenanceLossM + monitoringLossM;
+  const totalLossY = totalLossM * 12;
 
   useEffect(() => {
     (async () => {
       try {
         let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== "granted") {
-          setCity("Your City");
-          return;
-        }
+        if (status !== "granted") return;
 
         let loc = await Location.getCurrentPositionAsync({});
         let geo = await Location.reverseGeocodeAsync(loc.coords);
 
         if (geo.length > 0) {
-          setCity(geo[0].city || geo[0].region || "Your Area");
+          setCity(geo[0].city || "Your City");
         }
-      } catch {
-        setCity("Your City");
-      }
+      } catch {}
     })();
   }, []);
 
   return (
     <Screen>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingBottom: 40,
-        }}
-      >
-        {/* 👋 HEADER */}
-        <View style={{ marginBottom: 25 }}>
-          <Text
-            style={{
-              fontSize: 13,
-              color: Colors.subText,
-            }}
-          >
-            {greeting}
-          </Text>
+      <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
+        {/* HEADER */}
+        <Text style={{ color: Colors.subText }}>{getGreeting()}</Text>
+        <Text style={{ fontSize: Theme.font.hero, fontWeight: "700" }}>
+          {user?.name || "Welcome"} 👋
+        </Text>
+        <Text style={{ color: Colors.subText }}>{city}</Text>
 
-          <Text
-            style={{
-              fontSize: Theme.font.hero,
-              fontWeight: "700",
-              marginTop: 2,
-            }}
-          >
-            {user ? `${userName} 👋` : "Welcome 👋"}
+        {/* HERO */}
+        <View style={styles.hero}>
+          <Text style={styles.heroText}>
+            Reduce your electricity bill by 90% ☀️
           </Text>
-
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginTop: 6,
-            }}
-          >
-            <Ionicons
-              name="location-outline"
-              size={14}
-              color={Colors.subText}
-            />
-            <Text style={{ marginLeft: 5, color: Colors.subText }}>{city}</Text>
-          </View>
         </View>
 
-        {/* 🌈 HERO */}
-        <View
-          style={{
-            backgroundColor: Colors.primary,
-            padding: 24,
-            borderRadius: 24,
-            marginBottom: 30,
-          }}
-        >
-          <Text
-            style={{
-              color: "white",
-              fontSize: 28,
-              fontWeight: "700",
-              lineHeight: 36,
-            }}
-          >
-            Reduce your electricity bill{"\n"}by 90% ☀️
-          </Text>
+        {/* 🔥 CALCULATOR */}
+        <View style={styles.card}>
+          <Text style={styles.title}>Calculate Your Savings ⚡</Text>
 
-          <Text
-            style={{
-              color: "#ECFDF5",
-              marginTop: 10,
-            }}
-          >
-            Switch to rooftop solar with subsidy & EMI options
-          </Text>
+          <TextInput
+            placeholder="Enter Monthly Bill (e.g. 1000)"
+            value={bill}
+            onChangeText={setBill}
+            keyboardType="numeric"
+            style={styles.input}
+          />
 
-          <TouchableOpacity
-            style={{
-              marginTop: 20,
-              backgroundColor: "white",
-              padding: 14,
-              borderRadius: 14,
-              alignItems: "center",
-            }}
-            onPress={() => router.push("/dashboard/register")}
-          >
-            <Text style={{ color: Colors.primary, fontWeight: "600" }}>
-              Check Solar Feasibility
-            </Text>
-          </TouchableOpacity>
-        </View>
+          <TextInput
+            placeholder="Enter Solar Size (kW)"
+            value={solarSize}
+            onChangeText={setSolarSize}
+            keyboardType="numeric"
+            style={styles.input}
+          />
 
-        {/* 💰 SAVINGS */}
-        <View
-          style={{
-            backgroundColor: "#F8FAFC",
-            padding: 20,
-            borderRadius: 20,
-            marginBottom: 30,
-          }}
-        >
-          <Text style={{ fontSize: 16, fontWeight: "600" }}>
-            Your Bill vs Solar
-          </Text>
-
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "flex-end",
-              height: 100,
-              marginTop: 20,
-            }}
-          >
-            <View
-              style={{
-                width: 40,
-                height: 90,
-                backgroundColor: Colors.danger,
-                borderRadius: 8,
-                marginRight: 20,
-              }}
-            />
-
-            <View
-              style={{
-                width: 40,
-                height: 25,
-                backgroundColor: Colors.primary,
-                borderRadius: 8,
-              }}
-            />
+          {/* Quick Select */}
+          <View style={styles.row}>
+            {["1", "2", "3", "5", "10"].map((s) => (
+              <TouchableOpacity
+                key={s}
+                onPress={() => setSolarSize(s)}
+                style={styles.sizeBtn}
+              >
+                <Text>{s} kW</Text>
+              </TouchableOpacity>
+            ))}
           </View>
 
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginTop: 10,
-            }}
-          >
-            <Text style={{ color: Colors.subText }}>Current</Text>
-            <Text style={{ color: Colors.danger, fontWeight: "600" }}>
-              ₹ 4000
-            </Text>
-          </View>
-
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <Text style={{ color: Colors.subText }}>After Solar</Text>
-            <Text style={{ color: Colors.primary, fontWeight: "600" }}>
-              ₹ 300
-            </Text>
-          </View>
-
-          <Text
-            style={{
-              marginTop: 10,
-              fontWeight: "700",
-              color: Colors.primary,
-            }}
-          >
-            Save ₹44,000/year
-          </Text>
-
           <TouchableOpacity
-            style={{
-              marginTop: 15,
-              backgroundColor: Colors.primary,
-              padding: 14,
-              borderRadius: 12,
-              alignItems: "center",
-            }}
-            onPress={() => router.push("/calculators/savings")}
+            style={styles.button}
+            onPress={() => setShowResult(true)}
           >
-            <Text style={{ color: "white", fontWeight: "600" }}>
-              Calculate Savings
-            </Text>
+            <Text style={{ color: "#fff" }}>Calculate Savings</Text>
           </TouchableOpacity>
         </View>
 
-        {/* ⚡ SERVICES */}
-        <View style={{ marginBottom: 30 }}>
-          <Text style={{ fontSize: 16, fontWeight: "600", marginBottom: 10 }}>
-            Our Services
-          </Text>
+        {/* 📊 RESULT */}
+        {showResult && (
+          <>
+            <View style={styles.card}>
+              <BarChart
+                data={{
+                  labels: ["Current", "Solar"],
+                  datasets: [{ data: [monthlyBill, solarBill] }],
+                }}
+                width={screenWidth - 60}
+                height={220}
+                yAxisLabel="₹"
+                fromZero
+                chartConfig={{
+                  backgroundGradientFrom: Colors.card,
+                  backgroundGradientTo: Colors.card,
+                  color: () => Colors.primary,
+                  labelColor: () => Colors.subText,
+                }}
+              />
 
-          <ServiceItem icon="build-outline" title="AMC Maintenance" />
-          <ServiceItem icon="analytics-outline" title="Monitoring System" />
-          <ServiceItem icon="cash-outline" title="Subsidy Assistance" />
-        </View>
+              <Text style={styles.result}>
+                Monthly Saving: ₹{monthlySaving}
+              </Text>
+              <Text style={styles.result}>Yearly Saving: ₹{yearlySaving}</Text>
+            </View>
 
-        {/* 🔄 HOW IT WORKS */}
-        <View style={{ marginBottom: 30 }}>
-          <Text style={{ fontSize: 16, fontWeight: "600", marginBottom: 10 }}>
-            How it works
-          </Text>
+            {/* LOSS */}
+            <View style={styles.card}>
+              <Text style={styles.title}>Loss Without Maintenance ⚠️</Text>
 
-          <StepItem step="1" text="Check feasibility" />
-          <StepItem step="2" text="Free inspection" />
-          <StepItem step="3" text="Installation & net metering" />
-          <StepItem step="4" text="Track savings in app" />
-        </View>
+              <LossItem text="Dirty Panels" m={dirtyLossM} />
+              <LossItem text="No Maintenance" m={maintenanceLossM} />
+              <LossItem text="No Monitoring" m={monitoringLossM} />
 
-        {/* ⭐ WHY US */}
-        <View
-          style={{
-            backgroundColor: "#F8FAFC",
-            padding: 18,
-            borderRadius: 20,
-            marginBottom: 30,
-          }}
-        >
-          <Text style={{ fontSize: 16, fontWeight: "600", marginBottom: 10 }}>
-            Why Sustainify?
-          </Text>
+              <Text style={styles.result}>Monthly Loss: ₹{totalLossM}</Text>
+              <Text style={styles.result}>Yearly Loss: ₹{totalLossY}</Text>
 
-          <Benefit text="Expert Solar Engineers" />
-          <Benefit text="End-to-End EPC + O&M" />
-          <Benefit text="Real-time Monitoring" />
-          <Benefit text="Affordable AMC" />
-        </View>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => router.push("/dashboard/register")}
+              >
+                <Text style={{ color: "#fff" }}>Fix Loss → Register Now</Text>
+              </TouchableOpacity>
+            </View>
+          </>
+        )}
 
-        {/* 📊 APP VALUE */}
-        <View style={{ marginBottom: 30 }}>
-          <Text style={{ fontSize: 16, fontWeight: "600" }}>
-            Track your solar system 📊
-          </Text>
+        {/* FAQ */}
+        <View style={styles.card}>
+          <Text style={styles.title}>FAQs ❓</Text>
 
-          <Text style={{ marginTop: 6, color: Colors.subText }}>
-            Monitor generation, savings & performance in real-time
-          </Text>
+          {faqData.map((item, i) => (
+            <TouchableOpacity
+              key={i}
+              onPress={() => setOpenFAQ(openFAQ === i ? null : i)}
+              style={styles.faqItem}
+            >
+              <Text style={{ fontWeight: "600" }}>{item.q}</Text>
 
-          <TouchableOpacity
-            style={{
-              marginTop: 15,
-              backgroundColor: Colors.primary,
-              padding: 14,
-              borderRadius: 12,
-              alignItems: "center",
-            }}
-            onPress={() => router.push("/dashboard")}
-          >
-            <Text style={{ color: "white", fontWeight: "600" }}>
-              View Demo Dashboard
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* ⚡ AMC */}
-        <View
-          style={{
-            backgroundColor: "#FEF9C3",
-            padding: 18,
-            borderRadius: 20,
-            marginBottom: 30,
-          }}
-        >
-          <Text style={{ fontWeight: "600" }}>Upgrade to AMC ⚡</Text>
-
-          <Text style={{ marginTop: 5, color: Colors.subText }}>
-            Keep your system at peak performance
-          </Text>
-
-          <TouchableOpacity
-            style={{
-              marginTop: 12,
-              backgroundColor: Colors.primary,
-              padding: 12,
-              borderRadius: 10,
-              alignItems: "center",
-            }}
-          >
-            <Text style={{ color: "white", fontWeight: "600" }}>
-              Explore Plans
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* 🚀 FINAL CTA */}
-        <View
-          style={{
-            backgroundColor: Colors.primary,
-            padding: 24,
-            borderRadius: 24,
-            marginBottom: 30,
-          }}
-        >
-          <Text
-            style={{
-              color: "white",
-              fontSize: 18,
-              fontWeight: "700",
-            }}
-          >
-            Start your solar journey
-          </Text>
-
-          <Text
-            style={{
-              color: "#DBEAFE",
-              marginTop: 8,
-            }}
-          >
-            Book free consultation & get proposal
-          </Text>
-
-          <TouchableOpacity
-            style={{
-              marginTop: 15,
-              backgroundColor: "white",
-              padding: 14,
-              borderRadius: 14,
-              alignItems: "center",
-            }}
-            onPress={() => router.push("/dashboard/register")}
-          >
-            <Text style={{ color: Colors.primary, fontWeight: "600" }}>
-              Book Free Consultation
-            </Text>
-          </TouchableOpacity>
+              {openFAQ === i && <Text style={styles.faqText}>{item.a}</Text>}
+            </TouchableOpacity>
+          ))}
         </View>
       </ScrollView>
     </Screen>
   );
 }
 
-/* 🔧 COMPONENTS */
-
-const ServiceItem = ({ icon, title }: any) => (
-  <View
-    style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}
-  >
-    <Ionicons name={icon} size={20} color={Colors.primary} />
-    <Text style={{ marginLeft: 10 }}>{title}</Text>
-  </View>
-);
-
-const StepItem = ({ step, text }: any) => (
-  <View style={{ flexDirection: "row", marginBottom: 8 }}>
-    <View
-      style={{
-        backgroundColor: Colors.primary,
-        width: 22,
-        height: 22,
-        borderRadius: 11,
-        alignItems: "center",
-        justifyContent: "center",
-        marginRight: 10,
-      }}
-    >
-      <Text style={{ color: "white", fontSize: 12 }}>{step}</Text>
-    </View>
+/* COMPONENTS */
+const LossItem = ({ text, m }: any) => (
+  <View style={styles.lossRow}>
     <Text>{text}</Text>
+    <Text style={{ color: Colors.danger }}>₹{m}/mo</Text>
   </View>
 );
 
-const Benefit = ({ text }: any) => (
-  <View style={{ flexDirection: "row", marginBottom: 6 }}>
-    <Ionicons name="checkmark-circle" size={18} color={Colors.primary} />
-    <Text style={{ marginLeft: 8, color: Colors.subText }}>{text}</Text>
-  </View>
-);
+/* STYLES */
+const styles = {
+  hero: {
+    backgroundColor: Colors.primary,
+    padding: 24,
+    borderRadius: 24,
+    marginBottom: 20,
+  },
+  heroText: {
+    color: "#fff",
+    fontSize: 26,
+    fontWeight: "700",
+  },
+  card: {
+    backgroundColor: Colors.card,
+    padding: 18,
+    borderRadius: 20,
+    marginBottom: 20,
+
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  title: {
+    fontWeight: "600",
+    marginBottom: 10,
+  },
+  input: {
+    backgroundColor: Colors.background,
+    padding: 12,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  row: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+  sizeBtn: {
+    padding: 10,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: 10,
+    margin: 5,
+  },
+  button: {
+    backgroundColor: Colors.primary,
+    padding: 14,
+    borderRadius: 12,
+    alignItems: "center",
+    marginTop: 10,
+  },
+  result: {
+    marginTop: 10,
+    color: Colors.primary,
+    fontWeight: "700",
+    textAlign: "center",
+  },
+  faqItem: {
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderColor: Colors.border,
+  },
+  faqText: {
+    color: Colors.subText,
+    marginTop: 6,
+  },
+  lossRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 8,
+  },
+};
+
+/* FAQ DATA */
+const faqData = [
+  {
+    q: "How accurate is this savings calculation?",
+    a: "This is an estimate based on average solar efficiency. Actual savings may vary based on location, usage, and installation quality.",
+  },
+  {
+    q: "Why am I losing money without maintenance?",
+    a: "Dust, wiring issues, and inverter inefficiencies reduce output, causing loss in energy generation.",
+  },
+  {
+    q: "Do I need monitoring system?",
+    a: "Yes, monitoring helps track performance and detect faults early, ensuring maximum savings.",
+  },
+  {
+    q: "How often should solar panels be cleaned?",
+    a: "Ideally once every 15–30 days depending on dust conditions.",
+  },
+];

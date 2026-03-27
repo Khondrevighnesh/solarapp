@@ -71,7 +71,7 @@ export default function ClientTabs() {
         }}
       />
 
-      <Tabs.Screen name="plants/index" options={{ href: null }} />
+      <Tabs.Screen name="plants/plant" options={{ href: null }} />
       <Tabs.Screen name="plants/cards" options={{ href: null }} />
     </Tabs>
   );
