@@ -1,26 +1,42 @@
+// theme/colors.ts
 export const Colors = {
+  // ━━━ Primary (Navy - Premium UI) ━━━
+  primary: "#0B1F3B",
+  primaryMid: "#1E3A5F",
+  primarySoft: "#E8EEF8",
 
-  // 🌞 Brand Colors (Softer & Premium)
-  primary: "#22C55E",       // softer green (was darker before)
-  secondary: "#4ADE80",     // lighter fresh green
-  accent: "#FBBF24",        // warm solar yellow (less harsh than #FACC15)
+  // ━━━ Solar Accent ━━━
+  accent: "#F59E0B",
+  accentSoft: "#FFFBEB",
 
-  // 🌈 Gradients (MAIN UPGRADE)
-  gradientPrimary: ["#22C55E", "#86EFAC"],   // soft green gradient
-  gradientAccent: ["#FBBF24", "#FDE68A"],    // sun glow gradient
+  // ━━━ Eco / Production (Green - Solar meaning) ━━━
+  eco: "#16A34A",
+  ecoSoft: "#F0FDF4",
 
-  // 🧱 UI Base (Cleaner & lighter)
-  background: "#F8FAFC",    // smoother than #F1F5F9
-  card: "#FFFFFF",
+  // ━━━ Base UI ━━━
+  background: "#F8FAFC",
+  surface: "#FFFFFF",
+  surfaceAlt: "#F1F5F9",
 
-  // ✍️ Text (slightly softer contrast)
+  // ━━━ Text ━━━
   text: "#0F172A",
+  textSecondary: "#334155",
   subText: "#64748B",
+  textInverse: "#FFFFFF",
 
-  // 🔲 Borders & States (less harsh)
-  border: "#E2E8F0",        
+  // ━━━ Borders ━━━
+  border: "#E2E8F0",
+  borderLight: "#F1F5F9",
+
+  // ━━━ Status ━━━
   danger: "#EF4444",
+  dangerSoft: "#FEF2F2",
+  warning: "#F59E0B",
+  warningSoft: "#FFFBEB",
+  info: "#3B82F6",
+  infoSoft: "#EFF6FF",
 
-  // 🔵 Utility
-  blue: "#3B82F6"
+  // ━━━ Shadows ━━━
+  shadow: "#0B1F3B",
+  shadowSoft: "#64748B",
 };

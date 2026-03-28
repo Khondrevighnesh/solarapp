@@ -8,16 +8,9 @@ import { Theme } from "../theme/theme";
 export default function Screen({ children }: any) {
   return (
     <SafeAreaView style={styles.safe} edges={["top", "left", "right"]}>
-      
-      <StatusBar
-        barStyle="dark-content"
-        backgroundColor={Colors.background}
-      />
+      <StatusBar barStyle="dark-content" backgroundColor={Colors.background} />
 
-      <View style={styles.container}>
-        {children}
-      </View>
-
+      <View style={styles.container}>{children}</View>
     </SafeAreaView>
   );
 }
@@ -25,11 +18,10 @@ export default function Screen({ children }: any) {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: Colors.background
+    backgroundColor: Colors.background,
   },
   container: {
     flex: 1,
-    paddingHorizontal: Theme.spacing.md,
-    paddingTop: Theme.spacing.sm
-  }
+    paddingTop: Theme.spacing.sm,
+  },
 });
