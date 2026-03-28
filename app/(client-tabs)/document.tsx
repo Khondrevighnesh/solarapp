@@ -40,7 +40,7 @@ export default function UploadDocuments() {
     },
     { label: "Address Proof", desc: "Voter ID/Passport", required: true },
     { label: "Property Tax Receipt", desc: "Recent year", required: false },
-    { label: "Passport Photo", desc: "White background", required: true },
+    { label: " Photo", desc: "White background", required: true },
     { label: "Bank Details", desc: "Cancelled cheque", required: true },
   ];
 
