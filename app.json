@@ -7,10 +7,10 @@
     "icon": "./assets/images/icon.png",
     "scheme": "solarapp",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "ios": {
-      "supportsTablet": true
-      
+      "supportsTablet": true,
+      "bundleIdentifier": "com.vighneshkhondre.solarApp"
     },
     "android": {
       "adaptiveIcon": {
@@ -21,7 +21,8 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.vighneshkhondre.solarApp"
+      "package": "com.vighneshkhondre.solarApp",
+      "jsEngine": "hermes"
     },
     "web": {
       "output": "static",
@@ -32,7 +33,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/pvprotech.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",
@@ -47,7 +48,6 @@
       "reactCompiler": true
     },
     "extra": {
-      "router": {},
       "eas": {
         "projectId": "5575a5dd-e2ab-4b54-9ed0-8436a44ba409"
       }
