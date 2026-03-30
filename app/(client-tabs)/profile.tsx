@@ -353,7 +353,7 @@ export default function Profile() {
           style={styles.versionCard}
         >
           <Ionicons name="sunny" size={20} color={Colors.accent} />
-          <Text style={styles.versionText}>Solar App v1.0.0</Text>
+          <Text style={styles.versionText}>PVprotech v1.0.0</Text>
           <Text style={styles.versionSub}>by Sustanify Energy</Text>
         </Animated.View>
 
