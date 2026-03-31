@@ -39,8 +39,7 @@ export default function ClientEntry() {
   const [generatedOtp, setGeneratedOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [otpTimer, setOtpTimer] = useState(0);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const progress = useSharedValue(0);
 
   // OTP Timer
