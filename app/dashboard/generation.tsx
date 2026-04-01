@@ -5,17 +5,15 @@ import {
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
+  StyleSheet,
 } from "react-native";
-
 import { useState, useEffect } from "react";
 import { LineChart } from "react-native-chart-kit";
 
 import Screen from "../components/Screen";
 import { plants } from "../../data/plants";
-
 import { Colors } from "../theme/colors";
 import { Theme } from "../theme/theme";
-import { GlobalStyles } from "../theme/globalStyles";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -27,7 +25,7 @@ export default function Generation() {
   const [weather, setWeather] = useState<any>(null);
   const [loadingWeather, setLoadingWeather] = useState(true);
 
-  /* 🌦️ FREE WEATHER API (NO API KEY) */
+  /* Weather */
   useEffect(() => {
     const fetchWeather = async () => {
       try {
@@ -42,11 +40,10 @@ export default function Generation() {
         setLoadingWeather(false);
       }
     };
-
     fetchWeather();
   }, []);
 
-  /* 📊 DATA */
+  /* Data */
   const getChartData = () => {
     if (view === "daily") {
       return {
@@ -54,7 +51,6 @@ export default function Generation() {
         data: plant?.generation || [20, 30, 25, 40, 50, 45, 60],
       };
     }
-
     if (view === "monthly") {
       return {
         labels: [
@@ -76,7 +72,6 @@ export default function Generation() {
         ],
       };
     }
-
     return {
       labels: ["2021", "2022", "2023", "2024", "2025"],
       data: plant?.yearly || [5000, 7200, 8500, 9200, 11000],
@@ -84,113 +79,69 @@ export default function Generation() {
   };
 
   const chart = getChartData();
-
-  /* 📏 DYNAMIC WIDTH (KEY FIX) */
   const chartWidth = Math.max(screenWidth, chart.labels.length * 70);
 
-  /* SAFE CALC */
   const total = (chart.data || []).reduce((a, b) => a + b, 0);
   const today = chart.data?.[chart.data.length - 1] || 0;
-
   const expected = total * 1.1 || 1;
   const efficiency = ((total / expected) * 100).toFixed(1);
   const isLow = Number(efficiency) < 80;
+  const trend =
+    today >= (chart.data?.[chart.data.length - 2] || 0) ? "up" : "down";
 
   return (
-    <Screen>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* HEADER */}
-        <View
-          style={{
-            backgroundColor: Colors.primary,
-            paddingTop: 40,
-            paddingBottom: 30,
-            paddingHorizontal: 20,
-            borderBottomLeftRadius: 30,
-            borderBottomRightRadius: 30,
-            borderTopLeftRadius: 30,
-            borderTopRightRadius: 30,
-          }}
-        >
-          <Text
-            style={{
-              color: "white",
-              fontSize: Theme.font.hero,
-              fontWeight: "bold",
-            }}
-          >
-            Solar Analytics
-          </Text>
-
-          <Text style={{ color: "#DCFCE7" }}>
-            {plant?.name || "Solar Plant"}
-          </Text>
-        </View>
-
-        {/* KPI */}
-        <View style={{ marginTop: 10 }}>
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <KPI title="Today" value={`${today} kWh`} />
-            <KPI title="Total" value={`${total} kWh`} />
-          </View>
-
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginTop: 10,
-            }}
-          >
-            <KPI title="Savings" value={`₹${total * 8}`} />
-            <KPI title="Efficiency" value={`${efficiency}%`} />
+    <Screen backgroundColor={Colors.background}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 28 }}
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <View style={styles.headerAccent} />
+          <Text style={styles.headerTitle}>Solar Analytics</Text>
+          <Text style={styles.headerSub}>{plant?.name || "Solar Plant"}</Text>
+          <View style={styles.headerChips}>
+            <View style={styles.chip}>
+              <Text style={styles.chipText}>Live</Text>
+            </View>
+            <View style={styles.chipSoft}>
+              <Text style={styles.chipSoftText}>Clean UI</Text>
+            </View>
           </View>
         </View>
 
-        {/* ALERT */}
+        {/* KPI Grid */}
+        <View style={styles.kpiWrap}>
+          <KPI title="Today" value={`${today} kWh`} accent />
+          <KPI title="Total" value={`${total} kWh`} />
+          <KPI title="Savings" value={`₹${total * 8}`} />
+          <KPI title="Efficiency" value={`${efficiency}%`} />
+        </View>
+
+        {/* Alert */}
         {isLow && (
-          <View
-            style={{
-              backgroundColor: "#FEF2F2",
-              marginHorizontal: 16,
-
-              borderRadius: 12,
-              borderWidth: 1,
-              borderColor: "#FCA5A5",
-            }}
-          >
-            <Text style={{ color: "#DC2626", fontWeight: "bold" }}>
-              ⚠️ Low Performance Detected
-            </Text>
+          <View style={styles.alertCard}>
+            <Text style={styles.alertText}>⚠️ Low Performance Detected</Text>
           </View>
         )}
 
-        {/* TOGGLE */}
-        <View
-          style={{
-            flexDirection: "row",
-            margin: 16,
-            backgroundColor: "#F1F5F9",
-            borderRadius: 14,
-          }}
-        >
+        {/* Toggle */}
+        <View style={styles.toggle}>
           {["daily", "monthly", "yearly"].map((item) => (
             <TouchableOpacity
               key={item}
               onPress={() => setView(item as any)}
-              style={{
-                flex: 1,
-                padding: 10,
-                borderRadius: 10,
-                backgroundColor: view === item ? Colors.primary : "transparent",
-              }}
+              style={[
+                styles.toggleItem,
+                view === item && styles.toggleItemActive,
+              ]}
+              activeOpacity={0.9}
             >
               <Text
-                style={{
-                  textAlign: "center",
-                  color: view === item ? "white" : "#64748B",
-                }}
+                style={[
+                  styles.toggleText,
+                  view === item && styles.toggleTextActive,
+                ]}
               >
                 {item.toUpperCase()}
               </Text>
@@ -198,27 +149,28 @@ export default function Generation() {
           ))}
         </View>
 
-        {/* 📊 CHART WITH SCROLL (MAIN FIX) */}
-        <View
-          style={{
-            backgroundColor: "white",
-            borderRadius: 20,
-            paddingVertical: 16,
-            borderWidth: 1,
-            borderColor: "#E2E8F0",
-            marginBottom: 10,
-          }}
-        >
-          <Text
-            style={{
-              fontWeight: "bold",
-              marginBottom: 10,
-              marginLeft: 16,
-              fontSize: 16,
-            }}
-          >
-            {view.toUpperCase()} Generation
-          </Text>
+        {/* Chart Card */}
+        <View style={styles.card}>
+          <View style={styles.cardHeaderRow}>
+            <Text style={styles.cardTitle}>
+              {view.toUpperCase()} Generation
+            </Text>
+            <View
+              style={[
+                styles.trendPill,
+                trend === "up" ? styles.trendUp : styles.trendDown,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.trendText,
+                  trend === "up" ? styles.trendTextUp : styles.trendTextDown,
+                ]}
+              >
+                {trend === "up" ? "▲" : "▼"} {trend === "up" ? "Up" : "Down"}
+              </Text>
+            </View>
+          </View>
 
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <LineChart
@@ -227,61 +179,59 @@ export default function Generation() {
                 datasets: [{ data: chart.data || [] }],
               }}
               width={chartWidth}
-              height={220}
+              height={240}
               bezier
               withInnerLines={false}
               withOuterLines={false}
               withShadow={false}
               chartConfig={{
-                backgroundGradientFrom: "#ffffff",
-                backgroundGradientTo: "#ffffff",
+                backgroundGradientFrom: Colors.surface,
+                backgroundGradientTo: Colors.surface,
                 color: () => Colors.primary,
-                labelColor: () => "#64748B",
-
+                labelColor: () => Colors.subText,
                 propsForDots: {
                   r: "4",
                   strokeWidth: "2",
-                  stroke: "#fff",
+                  stroke: Colors.textInverse,
                 },
-
-                propsForLabels: {
-                  fontSize: 10,
-                },
+                propsForLabels: { fontSize: 10 },
               }}
               onDataPointClick={(data) => setSelectedPoint(data)}
+              style={{ marginLeft: -6 }}
             />
           </ScrollView>
 
-          {/* TOOLTIP */}
           {selectedPoint && (
-            <View
-              style={{
-                marginTop: 10,
-                marginHorizontal: 16,
-                backgroundColor: "#F1F5F9",
-                padding: 10,
-                borderRadius: 10,
-              }}
-            >
-              <Text>
+            <View style={styles.tooltip}>
+              <Text style={styles.tooltipText}>
                 {chart.labels[selectedPoint.index]} → {selectedPoint.value} kWh
               </Text>
             </View>
           )}
         </View>
 
-        {/* WEATHER */}
-        <View style={[GlobalStyles.card, {}]}>
-          <Text style={{ fontWeight: "bold" }}>Weather Impact</Text>
-
+        {/* Weather */}
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Weather Impact</Text>
           {loadingWeather ? (
-            <ActivityIndicator style={{ marginTop: 10 }} />
+            <ActivityIndicator
+              style={{ marginTop: 10 }}
+              color={Colors.primary}
+            />
           ) : (
             <>
-              <Text>Temp: {weather?.temperature ?? "--"}°C</Text>
-              <Text>Wind: {weather?.windspeed ?? "--"} km/h</Text>
-
-              <Text style={{ marginTop: 5, color: Colors.subText }}>
+              <Text style={styles.bodyText}>
+                Temp: {weather?.temperature ?? "--"}°C
+              </Text>
+              <Text style={styles.bodyText}>
+                Wind: {weather?.windspeed ?? "--"} km/h
+              </Text>
+              <Text
+                style={[
+                  styles.bodyText,
+                  { marginTop: 6, color: Colors.subText },
+                ]}
+              >
                 {weather?.temperature > 30
                   ? "High sunlight → Strong generation ☀️"
                   : "Moderate conditions"}
@@ -290,42 +240,205 @@ export default function Generation() {
           )}
         </View>
 
-        {/* PERFORMANCE */}
-        <View style={[GlobalStyles.card]}>
-          <Text style={{ fontWeight: "bold" }}>Performance Analytics</Text>
-
-          <Text>Expected: {Math.round(expected)} kWh</Text>
-          <Text>Actual: {total} kWh</Text>
-
+        {/* Performance */}
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Performance Analytics</Text>
+          <Text style={styles.bodyText}>
+            Expected: {Math.round(expected)} kWh
+          </Text>
+          <Text style={styles.bodyText}>Actual: {total} kWh</Text>
           <Text
-            style={{
-              color: isLow ? "red" : "green",
-              marginTop: 5,
-            }}
+            style={[
+              styles.bodyText,
+              { marginTop: 6, color: isLow ? Colors.danger : Colors.eco },
+            ]}
           >
             Efficiency: {efficiency}%
           </Text>
         </View>
 
-        <View style={{ height: 40 }} />
+        <View style={{ height: 18 }} />
       </ScrollView>
     </Screen>
   );
 }
 
-/* KPI */
-const KPI = ({ title, value }: any) => (
-  <View
-    style={{
-      width: "48%",
-      backgroundColor: "white",
-      padding: 16,
-      borderRadius: 16,
-      borderWidth: 1,
-      borderColor: "#E2E8F0",
-    }}
-  >
-    <Text style={{ color: "#64748B" }}>{title}</Text>
-    <Text style={{ fontSize: 20, fontWeight: "bold" }}>{value}</Text>
+/* KPI Component */
+const KPI = ({ title, value, accent = false }: any) => (
+  <View style={styles.kpi}>
+    <Text style={styles.kpiTitle}>{title}</Text>
+    <Text style={[styles.kpiValue, accent && { color: Colors.eco }]}>
+      {value}
+    </Text>
   </View>
 );
+
+/* STYLES */
+const styles = StyleSheet.create({
+  header: {
+    backgroundColor: Colors.surface,
+    paddingTop: 26,
+    paddingBottom: 18,
+    paddingHorizontal: 16,
+    borderBottomLeftRadius: 22,
+    borderBottomRightRadius: 22,
+    shadowColor: Colors.shadow,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 3,
+    marginBottom: 14,
+    position: "relative",
+  },
+  headerAccent: {
+    position: "absolute",
+    top: 0,
+    left: 16,
+    right: 16,
+    height: 4,
+    borderRadius: 4,
+    backgroundColor: Colors.accent,
+  },
+  headerTitle: {
+    color: Colors.text,
+    fontSize: Theme.font.hero,
+    fontWeight: "700",
+    letterSpacing: -0.3,
+  },
+  headerSub: {
+    color: Colors.subText,
+    marginTop: 4,
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  headerChips: { flexDirection: "row", gap: 8, marginTop: 10 },
+  chip: {
+    backgroundColor: Colors.primarySoft,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
+  },
+  chipText: { color: Colors.primary, fontWeight: "700", fontSize: 12 },
+  chipSoft: {
+    backgroundColor: Colors.surface,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
+  },
+  chipSoftText: { color: Colors.subText, fontWeight: "700", fontSize: 12 },
+
+  kpiWrap: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    marginTop: 4,
+    marginBottom: 8,
+  },
+  kpi: {
+    width: "48%",
+    backgroundColor: Colors.surface,
+    padding: 14,
+    borderRadius: 14,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
+    shadowColor: Colors.shadowSoft,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 1,
+  },
+  kpiTitle: { color: Colors.subText, fontSize: 12, marginBottom: 4 },
+  kpiValue: { fontWeight: "800", fontSize: 18, color: Colors.text },
+
+  alertCard: {
+    backgroundColor: Colors.dangerSoft,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: Colors.danger,
+    padding: 12,
+    marginHorizontal: 16,
+    marginBottom: 12,
+  },
+  alertText: { color: Colors.danger, fontWeight: "700" },
+
+  toggle: {
+    flexDirection: "row",
+    marginHorizontal: 16,
+    marginBottom: 12,
+    backgroundColor: Colors.surfaceAlt,
+    borderRadius: 14,
+    padding: 4,
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
+  },
+  toggleItem: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  toggleItemActive: {
+    backgroundColor: Colors.primary,
+    shadowColor: Colors.shadowSoft,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  toggleText: {
+    color: Colors.subText,
+    fontWeight: "700",
+    fontSize: 12,
+  },
+  toggleTextActive: {
+    color: Colors.textInverse,
+  },
+
+  card: {
+    backgroundColor: Colors.surface,
+    borderRadius: 18,
+    padding: 16,
+    marginHorizontal: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
+    shadowColor: Colors.shadowSoft,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 1,
+  },
+  cardHeaderRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  cardTitle: { fontWeight: "800", fontSize: 16, color: Colors.text },
+  bodyText: { color: Colors.text, fontSize: 14 },
+
+  trendPill: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 10,
+  },
+  trendUp: { backgroundColor: Colors.ecoSoft },
+  trendDown: { backgroundColor: Colors.dangerSoft },
+  trendText: { fontWeight: "700", fontSize: 12 },
+  trendTextUp: { color: Colors.eco },
+  trendTextDown: { color: Colors.danger },
+
+  tooltip: {
+    marginTop: 10,
+    backgroundColor: Colors.surfaceAlt,
+    padding: 10,
+    borderRadius: 10,
+  },
+  tooltipText: { color: Colors.text, fontSize: 13 },
+});

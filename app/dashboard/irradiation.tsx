@@ -1,5 +1,4 @@
 import { View, Text, ScrollView, Dimensions } from "react-native";
-
 import { LineChart } from "react-native-chart-kit";
 
 import Screen from "../components/Screen";
@@ -47,18 +46,16 @@ export default function Irradiation() {
         <View
           style={{
             backgroundColor: Colors.primary,
-            paddingTop: 40,
+            paddingTop: 50,
             paddingBottom: 30,
             paddingHorizontal: 20,
-            borderBottomLeftRadius: 30,
-            borderBottomRightRadius: 30,
-            borderTopLeftRadius: 30,
-            borderTopRightRadius: 30,
+            borderRadius: 30,
+            margin: 10,
           }}
         >
           <Text
             style={{
-              color: "white",
+              color: Colors.textInverse,
               fontSize: Theme.font.hero,
               fontWeight: "bold",
             }}
@@ -66,11 +63,13 @@ export default function Irradiation() {
             Irradiation ☀️
           </Text>
 
-          <Text style={{ color: "#DCFCE7" }}>Solar Energy Input Analysis</Text>
+          <Text style={{ color: Colors.primarySoft, marginTop: 4 }}>
+            Solar Energy Input Analysis
+          </Text>
         </View>
 
         {/* 📊 KPI CARDS */}
-        <View style={{ marginTop: 10 }}>
+        <View style={{ paddingHorizontal: 10 }}>
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
@@ -82,7 +81,7 @@ export default function Irradiation() {
             style={{
               flexDirection: "row",
               justifyContent: "space-between",
-              marginTop: 10,
+              marginTop: 12,
             }}
           >
             <KPI title="Daily Total" value={`${total} kWh/m²`} />
@@ -91,10 +90,21 @@ export default function Irradiation() {
         </View>
 
         {/* 📈 GRAPH */}
-        <View style={[GlobalStyles.card, { marginTop: 10 }]}>
+        <View
+          style={[
+            GlobalStyles.card,
+            {
+              marginTop: 12,
+              backgroundColor: Colors.surface,
+              borderColor: Colors.border,
+            },
+          ]}
+        >
           <Text
             style={{
               fontWeight: "bold",
+              fontSize: 16,
+              color: Colors.text,
               marginBottom: 10,
             }}
           >
@@ -107,16 +117,21 @@ export default function Irradiation() {
                 labels,
                 datasets: [{ data: irradiationData }],
               }}
-              width={labels.length * 70} // ✅ scrollable width
+              width={labels.length * 70}
               height={220}
               bezier
               withShadow={false}
               withInnerLines={false}
               chartConfig={{
-                backgroundGradientFrom: "#fff",
-                backgroundGradientTo: "#fff",
-                color: () => "#FDB813", // solar yellow
-                labelColor: () => "#64748B",
+                backgroundGradientFrom: Colors.surface,
+                backgroundGradientTo: Colors.surface,
+                color: () => Colors.accent,
+                labelColor: () => Colors.subText,
+                propsForDots: {
+                  r: "4",
+                  strokeWidth: "2",
+                  stroke: Colors.accent,
+                },
               }}
               style={{ borderRadius: 16 }}
             />
@@ -124,12 +139,31 @@ export default function Irradiation() {
         </View>
 
         {/* 🌤 WEATHER IMPACT */}
-        <View style={[GlobalStyles.card, { marginTop: 10 }]}>
-          <Text style={{ fontWeight: "bold" }}>Weather Impact</Text>
+        <View
+          style={[
+            GlobalStyles.card,
+            {
+              marginTop: 12,
+              backgroundColor: Colors.surface,
+              borderColor: Colors.border,
+            },
+          ]}
+        >
+          <Text
+            style={{
+              fontWeight: "bold",
+              fontSize: 16,
+              color: Colors.text,
+            }}
+          >
+            Weather Impact
+          </Text>
 
-          <Text style={{ marginTop: 6 }}>Cloud Cover: Low ☀️</Text>
+          <Text style={{ marginTop: 6, color: Colors.warning }}>
+            Cloud Cover: Low ☀️
+          </Text>
 
-          <Text>Temperature: 32°C</Text>
+          <Text style={{ color: Colors.textSecondary }}>Temperature: 32°C</Text>
 
           <Text style={{ marginTop: 5, color: Colors.subText }}>
             High sunlight → Maximum solar generation expected
@@ -137,31 +171,69 @@ export default function Irradiation() {
         </View>
 
         {/* 📉 PERFORMANCE ANALYSIS */}
-        <View style={[GlobalStyles.card, { marginTop: 10 }]}>
-          <Text style={{ fontWeight: "bold" }}>Performance Analysis</Text>
+        <View
+          style={[
+            GlobalStyles.card,
+            {
+              marginTop: 12,
+              backgroundColor: Colors.surface,
+              borderColor: Colors.border,
+            },
+          ]}
+        >
+          <Text
+            style={{
+              fontWeight: "bold",
+              fontSize: 16,
+              color: Colors.text,
+            }}
+          >
+            Performance Analysis
+          </Text>
 
-          <Text style={{ marginTop: 6 }}>
+          <Text style={{ marginTop: 6, color: Colors.textSecondary }}>
             Irradiation is strong during peak hours (11AM–2PM)
           </Text>
 
-          <Text>Minor drop observed after 3PM due to angle shift</Text>
+          <Text style={{ color: Colors.textSecondary }}>
+            Minor drop observed after 3PM due to angle shift
+          </Text>
 
-          <Text style={{ color: "green", marginTop: 5 }}>
+          <Text style={{ color: Colors.eco, marginTop: 5 }}>
             System performing optimally 🟢
           </Text>
         </View>
 
         {/* 💡 INSIGHTS */}
-        <View style={[GlobalStyles.card, { marginTop: 10 }]}>
-          <Text style={{ fontWeight: "bold" }}>Smart Insights</Text>
+        <View
+          style={[
+            GlobalStyles.card,
+            {
+              marginTop: 12,
+              backgroundColor: Colors.surface,
+              borderColor: Colors.border,
+            },
+          ]}
+        >
+          <Text
+            style={{
+              fontWeight: "bold",
+              fontSize: 16,
+              color: Colors.text,
+            }}
+          >
+            Smart Insights
+          </Text>
 
-          <Text style={{ marginTop: 6 }}>
+          <Text style={{ marginTop: 6, color: Colors.textSecondary }}>
             • Peak irradiation reached at 1PM ☀️
           </Text>
 
-          <Text>• Ideal conditions for maximum output</Text>
+          <Text style={{ color: Colors.textSecondary }}>
+            • Ideal conditions for maximum output
+          </Text>
 
-          <Text>
+          <Text style={{ color: Colors.textSecondary }}>
             • Recommend monitoring panel tilt for better afternoon efficiency
           </Text>
         </View>
@@ -177,20 +249,25 @@ const KPI = ({ title, value }: any) => (
   <View
     style={{
       width: "48%",
-      backgroundColor: "white",
+      backgroundColor: Colors.surface,
       padding: 16,
-      borderRadius: 16,
+      borderRadius: 18,
       borderWidth: 1,
-      borderColor: "#E2E8F0",
+      borderColor: Colors.border,
+      shadowColor: Colors.shadow,
+      shadowOpacity: 0.05,
+      shadowRadius: 10,
+      elevation: 3,
     }}
   >
-    <Text style={{ color: "#64748B" }}>{title}</Text>
+    <Text style={{ color: Colors.subText, fontSize: 12 }}>{title}</Text>
 
     <Text
       style={{
-        fontSize: 20,
+        fontSize: 22,
         fontWeight: "bold",
-        marginTop: 5,
+        marginTop: 6,
+        color: Colors.text,
       }}
     >
       {value}

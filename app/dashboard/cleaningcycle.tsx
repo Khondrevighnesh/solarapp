@@ -1,10 +1,8 @@
-import { View, Text, ScrollView, Image, Dimensions } from "react-native";
+import { View, Text, ScrollView, Image, StyleSheet } from "react-native";
 
 import Screen from "../components/Screen";
 import { Colors } from "../theme/colors";
 import { Theme } from "../theme/theme";
-
-const screenWidth = Dimensions.get("window").width;
 
 /* 🧼 DATA */
 const cleaningData = [
@@ -46,176 +44,101 @@ export default function CleaningCycle() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 40 }}
       >
-        {/* 🔝 HEADER */}
-        <View
-          style={{
-            backgroundColor: Colors.primary,
-            paddingTop: 40,
-            paddingBottom: 30,
-            paddingHorizontal: 20,
-            borderBottomLeftRadius: 30,
-            borderBottomRightRadius: 30,
-            borderTopLeftRadius: 30,
-            borderTopRightRadius: 30,
-          }}
-        >
-          <Text
-            style={{
-              color: "white",
-              fontSize: Theme.font.hero,
-              fontWeight: "bold",
-            }}
-          >
-            Cleaning Cycle 🧼
-          </Text>
+        {/* 🔝 HEADER — full width, no side padding */}
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Cleaning Cycle 🧼</Text>
 
-          <Text style={{ color: "#DCFCE7", marginTop: 4 }}>
+          <Text style={styles.headerSubtitle}>
             24 Cycles / Year Maintenance
           </Text>
         </View>
 
-        {/* 📊 KPI + PROGRESS */}
-        <View
-          style={{
-            marginTop: 10,
-            backgroundColor: "white",
-            borderBottomLeftRadius: 24,
-            borderBottomRightRadius: 24,
-            borderTopLeftRadius: 24,
-            borderTopRightRadius: 24,
-            padding: 16,
-          }}
-        >
+        {/* 📊 KPI + PROGRESS — inset from both sides */}
+        <View style={styles.kpiContainer}>
           {/* KPI ROW */}
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <KPI title="Completed" value={completed} />
-            <KPI title="Pending" value={total - completed} />
-            <KPI title="Total" value={total} />
+          <View style={styles.kpiRow}>
+            <KPI title="Completed" value={completed} color={Colors.eco} />
+            <KPI
+              title="Pending"
+              value={total - completed}
+              color={Colors.warning}
+            />
+            <KPI title="Total" value={total} color={Colors.textSecondary} />
           </View>
 
           {/* 📈 PROGRESS BAR */}
           <View style={{ marginTop: 20 }}>
-            <Text style={{ fontWeight: "600", marginBottom: 6 }}>
-              Cleaning Progress
-            </Text>
+            <Text style={styles.sectionLabel}>Cleaning Progress</Text>
 
-            <View
-              style={{
-                height: 12,
-                backgroundColor: "#E5E7EB",
-                borderRadius: 10,
-                overflow: "hidden",
-              }}
-            >
+            <View style={styles.progressBarBg}>
               <View
-                style={{
-                  width: `${progress}%`,
-                  backgroundColor: Colors.primary,
-                  height: "100%",
-                }}
+                style={[styles.progressBarFill, { width: `${progress}%` }]}
               />
             </View>
 
-            <Text
-              style={{
-                marginTop: 6,
-                color: Colors.subText,
-                fontSize: 12,
-              }}
-            >
+            <Text style={styles.progressText}>
               {completed} / {total} cycles completed
             </Text>
           </View>
         </View>
 
-        {/* 📋 HISTORY */}
-        <View
-          style={{
-            marginTop: 10,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: Theme.font.heading,
-              fontWeight: "bold",
-              marginBottom: 12,
-            }}
-          >
-            Cleaning History
-          </Text>
+        {/* 📋 HISTORY — inset from both sides */}
+        <View style={styles.historySection}>
+          <Text style={styles.sectionTitle}>Cleaning History</Text>
 
           {cleaningData.map((item) => (
-            <View
-              key={item.id}
-              style={{
-                backgroundColor: "white",
-                padding: 16,
-                borderRadius: 16,
-                marginBottom: 14,
-                borderWidth: 1,
-                borderColor: "#E2E8F0",
-              }}
-            >
+            <View key={item.id} style={styles.historyCard}>
               {/* HEADER ROW */}
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <Text style={{ fontWeight: "bold" }}>{item.date}</Text>
+              <View style={styles.cardHeader}>
+                <Text style={styles.cardDate}>{item.date}</Text>
 
-                <Text
-                  style={{
-                    color: item.status === "Completed" ? "#16A34A" : "#F59E0B",
-                    fontWeight: "600",
-                  }}
+                <View
+                  style={[
+                    styles.statusBadge,
+                    {
+                      backgroundColor:
+                        item.status === "Completed"
+                          ? Colors.ecoSoft
+                          : Colors.warningSoft,
+                    },
+                  ]}
                 >
-                  {item.status}
-                </Text>
+                  <Text
+                    style={[
+                      styles.statusText,
+                      {
+                        color:
+                          item.status === "Completed"
+                            ? Colors.eco
+                            : Colors.warning,
+                      },
+                    ]}
+                  >
+                    {item.status}
+                  </Text>
+                </View>
               </View>
 
               {/* TECH */}
-              <Text style={{ marginTop: 6, color: Colors.subText }}>
-                👨‍🔧 {item.technician}
-              </Text>
+              <Text style={styles.technicianText}>👨‍🔧 {item.technician}</Text>
 
               {/* IMAGES */}
               {item.status === "Completed" && (
-                <View
-                  style={{
-                    flexDirection: "row",
-                    marginTop: 12,
-                    gap: 10,
-                  }}
-                >
+                <View style={styles.imageRow}>
                   <View style={{ flex: 1 }}>
-                    <Text style={label}>Before</Text>
+                    <Text style={styles.imageLabel}>Before</Text>
                     <Image source={{ uri: item.before }} style={styles.image} />
                   </View>
 
                   <View style={{ flex: 1 }}>
-                    <Text style={label}>After</Text>
+                    <Text style={styles.imageLabel}>After</Text>
                     <Image source={{ uri: item.after }} style={styles.image} />
                   </View>
                 </View>
               )}
 
               {/* REVIEW */}
-              <Text
-                style={{
-                  marginTop: 10,
-                  color: Colors.subText,
-                  fontSize: 13,
-                }}
-              >
-                {item.review}
-              </Text>
+              <Text style={styles.reviewText}>{item.review}</Text>
             </View>
           ))}
         </View>
@@ -225,41 +148,163 @@ export default function CleaningCycle() {
 }
 
 /* KPI CARD */
-const KPI = ({ title, value }: any) => (
-  <View
-    style={{
-      width: "30%",
-      backgroundColor: "#F8FAFC",
-      padding: 12,
-      borderRadius: 14,
-      alignItems: "center",
-    }}
-  >
-    <Text style={{ color: "#64748B", fontSize: 12 }}>{title}</Text>
+const KPI = ({
+  title,
+  value,
+  color,
+}: {
+  title: string;
+  value: number;
+  color: string;
+}) => (
+  <View style={styles.kpiCard}>
+    <Text style={styles.kpiTitle}>{title}</Text>
 
-    <Text
-      style={{
-        fontSize: 18,
-        fontWeight: "bold",
-        marginTop: 4,
-      }}
-    >
-      {value}
-    </Text>
+    <Text style={[styles.kpiValue, { color }]}>{value}</Text>
   </View>
 );
 
 /* STYLES */
-const label = {
-  fontSize: 12,
-  color: "#64748B",
-  marginBottom: 4,
-};
+const styles = StyleSheet.create({
+  // Header — full width, no side padding
+  header: {
+    backgroundColor: Colors.primary,
+    paddingTop: 40,
+    paddingBottom: 30,
+    paddingHorizontal: 20,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+  },
+  headerTitle: {
+    color: Colors.textInverse,
+    fontSize: Theme.font.hero,
+    fontWeight: "bold",
+  },
+  headerSubtitle: {
+    color: Colors.ecoSoft,
+    marginTop: 4,
+  },
 
-const styles = {
+  // KPI Container — inset from both sides
+  kpiContainer: {
+    marginTop: 10,
+    backgroundColor: Colors.surface,
+    borderRadius: 24,
+    padding: 16,
+    marginHorizontal: 16, // ✅ content padded from both sides
+  },
+  kpiRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  kpiCard: {
+    width: "30%",
+    backgroundColor: Colors.surfaceAlt,
+    padding: 12,
+    borderRadius: 14,
+    alignItems: "center",
+  },
+  kpiTitle: {
+    color: Colors.subText,
+    fontSize: 12,
+  },
+  kpiValue: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginTop: 4,
+  },
+
+  // Progress
+  progressBarBg: {
+    height: 12,
+    backgroundColor: Colors.border,
+    borderRadius: 10,
+    overflow: "hidden",
+  },
+  progressBarFill: {
+    backgroundColor: Colors.primary,
+    height: "100%",
+  },
+  progressText: {
+    marginTop: 6,
+    color: Colors.subText,
+    fontSize: 12,
+  },
+
+  // History Section — inset from both sides
+  historySection: {
+    marginTop: 10,
+    paddingHorizontal: 16, // ✅ content padded from both sides
+  },
+  sectionTitle: {
+    fontSize: Theme.font.heading,
+    fontWeight: "bold",
+    marginBottom: 12,
+    color: Colors.text,
+  },
+  sectionLabel: {
+    fontWeight: "600",
+    marginBottom: 6,
+    color: Colors.text,
+  },
+
+  // History Card
+  historyCard: {
+    backgroundColor: Colors.surface,
+    padding: 16,
+    borderRadius: 16,
+    marginBottom: 14,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  cardHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  cardDate: {
+    fontWeight: "bold",
+    color: Colors.text,
+  },
+  statusBadge: {
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  statusText: {
+    fontWeight: "600",
+    fontSize: 12,
+  },
+
+  // Technician
+  technicianText: {
+    marginTop: 6,
+    color: Colors.subText,
+  },
+
+  // Images
+  imageRow: {
+    flexDirection: "row",
+    marginTop: 12,
+    gap: 10,
+  },
+  imageLabel: {
+    fontSize: 12,
+    color: Colors.subText,
+    marginBottom: 4,
+  },
   image: {
-    width: "100%", // ✅ FIX overflow
+    width: "100%",
     height: 110,
     borderRadius: 10,
   },
-};
+
+  // Review
+  reviewText: {
+    marginTop: 10,
+    color: Colors.subText,
+    fontSize: 13,
+  },
+});

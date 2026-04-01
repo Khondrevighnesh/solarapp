@@ -5,6 +5,9 @@ import {
   ScrollView,
   BackHandler,
   Modal,
+  SafeAreaView,
+  Dimensions,
+  TextInput,
 } from "react-native";
 
 import { useLocalSearchParams, router, useFocusEffect } from "expo-router";
@@ -14,60 +17,51 @@ import { useAuth } from "../../../context/AuthContext";
 
 import Screen from "../../components/Screen";
 import { Colors } from "../../theme/colors";
+import { Theme } from "../../theme/theme";
 
-/* 🌱 PLANT DATA */
-const plant = {
-  name: "Mudra Solar Plant",
-  location: "Pune",
-  status: "Active",
-  today: 18,
-  mtd: 520,
-  efficiency: 92,
-  savings: 4160,
-};
+const { width } = Dimensions.get("window");
 
-/* ✅ ROUTES */
 const cards = [
   {
     title: "Generation",
     value: "520 kWh",
-    progress: 75,
     icon: "flash",
+    color: Colors.eco,
     route: "/dashboard/generation",
   },
   {
     title: "Cleaning",
     value: "18 / 24",
-    progress: 70,
     icon: "water",
+    color: Colors.accent,
     route: "/dashboard/cleaningcycle",
   },
   {
     title: "Reports",
     value: "12 Reports",
-    progress: 100,
     icon: "document-text",
+    color: Colors.primary,
     route: "/dashboard/reports",
   },
   {
     title: "Irradiation",
     value: "High",
-    progress: 85,
     icon: "sunny",
+    color: Colors.warning,
     route: "/dashboard/irradiation",
   },
   {
     title: "EPI",
     value: "0.92",
-    progress: 92,
     icon: "stats-chart",
+    color: Colors.info,
     route: "/dashboard/epi",
   },
   {
-    title: "Plant Information",
-    value: "Plant Information System",
-    progress: 100,
-    icon: "home-outline",
+    title: "Plant Info",
+    value: "View Details",
+    icon: "information-circle",
+    color: Colors.subText,
     route: "/dashboard/plant-details",
   },
 ];
@@ -76,311 +70,625 @@ export default function Cards() {
   const { plantId }: any = useLocalSearchParams();
   const { user, logout } = useAuth();
 
+  const [search, setSearch] = useState("");
   const [profileOpen, setProfileOpen] = useState(false);
   const [notifyOpen, setNotifyOpen] = useState(false);
 
-  /* 🔐 AUTH GUARD (SAFE FIX) */
+  // 🔐 Auth Guard
   useEffect(() => {
-    if (!user || user.role !== "client") {
-      router.replace("/(client-tabs)/dashboard"); // ✅ FIXED PATH
-    }
+    if (!user) router.replace("/(client-tabs)/dashboard");
   }, [user]);
 
-  /* ✅ RESET MODALS (IMPORTANT FIX) */
-  useFocusEffect(
-    useCallback(() => {
-      setProfileOpen(false);
-      setNotifyOpen(false);
-    }, []),
-  );
-
-  useEffect(() => {
-    setProfileOpen(false);
-    setNotifyOpen(false);
-  }, [user]);
-
-  /* 🔓 LOGOUT */
-  const handleLogout = async () => {
-    await logout();
-
-    setProfileOpen(false);
-    setNotifyOpen(false);
-
-    router.replace("/(client-tabs)/dashboard"); // ✅ FIXED (NO STACK)
-  };
-
-  /* 🔙 BACK BUTTON */
+  // 🔙 Back Button Handling
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => {
-        if (user && user.plants && user.plants.length > 1) {
-          router.replace("/(client-tabs)/dashboard"); // → plant list
-        } else {
-          router.replace("/(client-tabs)/dashboard"); // → dashboard
-        }
+        router.back();
         return true;
       };
-
       const sub = BackHandler.addEventListener(
         "hardwareBackPress",
         onBackPress,
       );
-
       return () => sub.remove();
-    }, [user]),
+    }, []),
+  );
+
+  if (!user) return null;
+
+  // 🔍 Filter cards based on search
+  const filteredCards = cards.filter((card) =>
+    card.title.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
-    <Screen>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* HEADER */}
-        <View style={styles.header}>
-          <View style={styles.headerRow}>
-            <View>
-              <Text style={styles.location}>📍 {plant.location}</Text>
-              <Text style={styles.plantName}>{plant.name}</Text>
-              <Text style={styles.status}>🟢 {plant.status}</Text>
-            </View>
-
-            <View style={{ flexDirection: "row" }}>
-              <TouchableOpacity onPress={() => setProfileOpen(true)}>
-                <Ionicons name="person-circle" size={42} color="white" />
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={() => setNotifyOpen(true)}>
-                <Ionicons
-                  name="notifications"
-                  size={40}
-                  color="white"
-                  style={{ marginLeft: 10 }}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-
-        {/* KPI */}
-        <View style={styles.kpiWrap}>
-          <KPI title="Today" value={`${plant.today} kWh`} />
-          <KPI title="MTD" value={`${plant.mtd}`} />
-          <KPI title="Eff." value={`${plant.efficiency}%`} />
-          <KPI title="Saved" value={`₹${plant.savings}`} />
-        </View>
-
-        {/* CARDS */}
-        <View>
-          {cards.map((card, i) => (
-            <TouchableOpacity
-              key={i}
-              onPress={() =>
-                router.push({
-                  pathname: card.route,
-                  params: { plantId },
-                })
-              }
-              style={styles.card}
-            >
-              <View style={styles.cardHeader}>
-                <Text style={styles.cardTitle}>{card.title}</Text>
-                <Ionicons name={card.icon} size={24} color={Colors.primary} />
+    <Screen backgroundColor={Colors.background}>
+      <SafeAreaView style={{ flex: 1 }}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 40 }}
+        >
+          {/* ✨ PREMIUM HEADER */}
+          <View style={styles.header}>
+            <View style={styles.headerContent}>
+              <View style={styles.headerLeft}>
+                <View style={styles.locationBadge}>
+                  <Ionicons name="location" size={14} color={Colors.accent} />
+                  <Text style={styles.locationText}>Pune, India</Text>
+                </View>
+                <Text style={styles.plantName}>Mudra Solar Plant</Text>
+                <Text style={styles.plantStatus}>
+                  Status: <Text style={styles.activeStatus}>Active</Text>
+                </Text>
               </View>
 
-              <Text style={styles.cardValue}>{card.value}</Text>
+              <View style={styles.headerActions}>
+                <TouchableOpacity
+                  style={styles.notificationBtn}
+                  onPress={() => setNotifyOpen(true)}
+                >
+                  <Ionicons name="notifications" color="white" size={22} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.profileBtn}
+                  onPress={() => setProfileOpen(true)}
+                >
+                  <Ionicons
+                    name="person-circle"
+                    color={Colors.surface}
+                    size={28}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
 
-              <View style={styles.progressBg}>
+            {/* 🔍 SEARCH BAR */}
+            <View style={styles.searchContainer}>
+              <Ionicons
+                name="search"
+                size={20}
+                color={Colors.subText}
+                style={styles.searchIcon}
+              />
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Search features..."
+                placeholderTextColor={Colors.subText}
+                value={search}
+                onChangeText={setSearch}
+              />
+            </View>
+          </View>
+
+          {/* 💡 KPI CARDS */}
+          <View style={styles.kpiContainer}>
+            <View style={styles.kpiCard}>
+              <Ionicons name="flash" size={24} color={Colors.eco} />
+              <View style={styles.kpiContent}>
+                <Text style={styles.kpiLabel}>Today's Generation</Text>
+                <Text style={styles.kpiValue}>18 kWh</Text>
+                <Text style={styles.kpiSub}>↑ 12% from yesterday</Text>
+              </View>
+            </View>
+
+            <View style={styles.kpiCard}>
+              <Ionicons name="wallet" size={24} color={Colors.accent} />
+              <View style={styles.kpiContent}>
+                <Text style={styles.kpiLabel}>Savings</Text>
+                <Text style={styles.kpiValue}>₹4160</Text>
+                <Text style={styles.kpiSub}>This month</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* 🗂️ FEATURE CARDS */}
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Plant Features</Text>
+            <Text style={styles.sectionCount}>
+              {filteredCards.length} items
+            </Text>
+          </View>
+
+          <View style={styles.cardsContainer}>
+            {filteredCards.map((card, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  styles.featureCard,
+                  {
+                    backgroundColor:
+                      index % 2 === 0 ? Colors.surface : Colors.surfaceAlt,
+                  },
+                ]}
+                onPress={() => router.push(`${card.route}?plantId=${plantId}`)}
+              >
                 <View
-                  style={[styles.progressFill, { width: `${card.progress}%` }]}
+                  style={[
+                    styles.cardIcon,
+                    { backgroundColor: `${card.color}20` },
+                  ]}
+                >
+                  <Ionicons name={card.icon} size={24} color={card.color} />
+                </View>
+
+                <View style={styles.cardContent}>
+                  <Text style={styles.cardTitle}>{card.title}</Text>
+                  <Text style={[styles.cardValue, { color: card.color }]}>
+                    {card.value}
+                  </Text>
+                </View>
+
+                <Ionicons
+                  name="chevron-forward"
+                  size={24}
+                  color={Colors.primary}
+                  style={styles.cardChevron}
                 />
-              </View>
-
-              <Text style={styles.progressText}>
-                {card.progress}% monthly progress
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        <View style={{ height: 40 }} />
-      </ScrollView>
-
-      {/* PROFILE */}
-      <Modal transparent visible={profileOpen} animationType="fade">
-        <CenterCard onClose={() => setProfileOpen(false)}>
-          <View style={{ alignItems: "center" }}>
-            <Ionicons name="person-circle" size={70} color={Colors.primary} />
-            <Text style={styles.profileName}>{user?.name}</Text>
-            <Text style={styles.profileSub}>{user?.email}</Text>
+              </TouchableOpacity>
+            ))}
           </View>
+        </ScrollView>
+      </SafeAreaView>
 
-          <View style={styles.divider} />
+      {/* 👤 PROFILE MODAL */}
+      <Modal transparent visible={profileOpen} animationType="slide">
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setProfileOpen(false)}
+        >
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={(e) => e.stopPropagation()}
+            style={styles.bottomSheet}
+          >
+            <View style={styles.sheetHandle} />
 
-          <ProfileItem icon="flash" text="Solar Client" />
-          <ProfileItem icon="stats-chart" text="Efficiency: 92%" />
-          <ProfileItem icon="wallet" text="Savings ₹4160/month" />
+            <View style={styles.profileHeader}>
+              <View style={styles.avatarContainer}>
+                <Ionicons name="person" size={48} color={Colors.primary} />
+              </View>
+              <Text style={styles.profileName}>{user.name || "User"}</Text>
+              <Text style={styles.profileEmail}>{user.email}</Text>
+            </View>
 
-          <TouchableOpacity onPress={handleLogout} style={styles.logoutBtn}>
-            <Ionicons name="log-out-outline" size={18} color="#fff" />
-            <Text style={{ color: "#fff", marginLeft: 6 }}>Logout</Text>
+            <View style={styles.profileStats}>
+              <View style={styles.statItem}>
+                <Text style={styles.statValue}>3</Text>
+                <Text style={styles.statLabel}>Plants</Text>
+              </View>
+              <View style={styles.statDivider} />
+              <View style={styles.statItem}>
+                <Text style={styles.statValue}>18k</Text>
+                <Text style={styles.statLabel}>kWh/month</Text>
+              </View>
+              <View style={styles.statDivider} />
+              <View style={styles.statItem}>
+                <Text style={styles.statValue}>92%</Text>
+                <Text style={styles.statLabel}>Efficiency</Text>
+              </View>
+            </View>
+
+            <TouchableOpacity
+              style={styles.logoutBtn}
+              onPress={() => {
+                logout();
+                setProfileOpen(false);
+              }}
+            >
+              <Ionicons
+                name="log-out-outline"
+                size={20}
+                color={Colors.danger}
+              />
+              <Text style={styles.logoutText}>Logout</Text>
+            </TouchableOpacity>
           </TouchableOpacity>
-        </CenterCard>
+        </TouchableOpacity>
       </Modal>
 
-      {/* NOTIFICATION */}
-      <Modal transparent visible={notifyOpen} animationType="fade">
-        <CenterCard onClose={() => setNotifyOpen(false)}>
-          <Text style={styles.notifyTitle}>Notifications 🔔</Text>
+      {/* 🔔 NOTIFICATIONS MODAL */}
+      <Modal transparent visible={notifyOpen} animationType="slide">
+        <TouchableOpacity
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPress={() => setNotifyOpen(false)}
+        >
+          <TouchableOpacity
+            activeOpacity={1}
+            onPress={(e) => e.stopPropagation()}
+            style={styles.bottomSheet}
+          >
+            <View style={styles.sheetHandle} />
 
-          <Notify icon="flash" text="High generation today (+20%)" />
-          <Notify icon="water" text="Cleaning due this week" />
-          <Notify icon="alert-circle" text="Performance drop detected" />
-        </CenterCard>
+            <View style={styles.notificationHeader}>
+              <Text style={styles.notificationTitle}>Notifications</Text>
+              <TouchableOpacity onPress={() => setNotifyOpen(false)}>
+                <Text style={styles.doneButton}>Done</Text>
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={styles.notificationContainer}>
+              {[
+                {
+                  id: 1,
+                  title: "Maintenance Alert",
+                  message: "Plant needs cleaning tomorrow",
+                  time: "2 hours ago",
+                  icon: "construct",
+                  color: Colors.accent,
+                },
+                {
+                  id: 2,
+                  title: "High Generation",
+                  message: "5% above average today",
+                  time: "5 hours ago",
+                  icon: "trending-up",
+                  color: Colors.eco,
+                },
+                {
+                  id: 3,
+                  title: "Performance Report",
+                  message: "March report is ready",
+                  time: "1 day ago",
+                  icon: "document-text",
+                  color: Colors.info,
+                },
+              ].map((item) => (
+                <TouchableOpacity key={item.id} style={styles.notificationItem}>
+                  <View
+                    style={[
+                      styles.notificationIcon,
+                      { backgroundColor: `${item.color}20` },
+                    ]}
+                  >
+                    <Ionicons name={item.icon} size={20} color={item.color} />
+                  </View>
+                  <View style={styles.notificationContent}>
+                    <Text style={styles.notificationTitle}>{item.title}</Text>
+                    <Text style={styles.notificationMessage}>
+                      {item.message}
+                    </Text>
+                    <Text style={styles.notificationTime}>{item.time}</Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </TouchableOpacity>
+        </TouchableOpacity>
       </Modal>
     </Screen>
   );
 }
 
-/* COMPONENTS */
-const KPI = ({ title, value }: any) => (
-  <View style={styles.kpi}>
-    <Text style={styles.kpiTitle}>{title}</Text>
-    <Text style={styles.kpiValue}>{value}</Text>
-  </View>
-);
-
-const Notify = ({ icon, text }: any) => (
-  <View style={styles.notifyCard}>
-    <Ionicons name={icon} size={20} color={Colors.primary} />
-    <Text style={styles.notifyText}>{text}</Text>
-  </View>
-);
-
-const ProfileItem = ({ icon, text }: any) => (
-  <View style={styles.profileRow}>
-    <Ionicons name={icon} size={18} color={Colors.primary} />
-    <Text style={styles.profileText}>{text}</Text>
-  </View>
-);
-
-const CenterCard = ({ children, onClose }: any) => (
-  <TouchableOpacity activeOpacity={1} onPress={onClose} style={styles.modalBg}>
-    <TouchableOpacity activeOpacity={1} style={styles.modalCard}>
-      {children}
-    </TouchableOpacity>
-  </TouchableOpacity>
-);
-
-/* STYLES */
 const styles = {
+  // Header Styles
   header: {
     backgroundColor: Colors.primary,
-    paddingTop: 40,
-    paddingBottom: 30,
-    paddingHorizontal: 16,
+    paddingTop: 24,
+    paddingBottom: 24,
+    paddingHorizontal: 20,
     borderRadius: 25,
+    shadowColor: Colors.shadow,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
+    elevation: 6,
   },
-  headerRow: {
+  headerContent: {
     flexDirection: "row",
     justifyContent: "space-between",
+    marginBottom: 16,
   },
-  location: { color: "white", fontSize: 16 },
-  plantName: { color: "white", fontSize: 18, fontWeight: "bold" },
-  status: { color: "#DCFCE7" },
-
-  kpiWrap: {
+  headerLeft: {},
+  locationBadge: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    marginTop: 10,
-  },
-
-  kpi: {
-    width: "48%",
-    backgroundColor: Colors.card,
-    padding: 16,
-    borderRadius: 16,
-    marginBottom: 12,
     alignItems: "center",
+    backgroundColor: "rgba(255,255,255,0.15)",
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 20,
+    alignSelf: "flex-start",
   },
-  kpiTitle: { color: Colors.subText },
-  kpiValue: { fontWeight: "bold", fontSize: 18 },
-
-  card: {
-    backgroundColor: Colors.card,
-    padding: 18,
-    borderRadius: 18,
-    marginBottom: 10,
+  locationText: {
+    color: "white",
+    fontSize: 12,
+    marginLeft: 4,
+    fontWeight: "500",
   },
-  cardHeader: {
+  plantName: {
+    color: "white",
+    fontSize: 22,
+    fontWeight: "700",
+    marginTop: 8,
+  },
+  plantStatus: {
+    color: "rgba(255,255,255,0.8)",
+    fontSize: 12,
+    marginTop: 4,
+  },
+  activeStatus: {
+    color: Colors.eco,
+    fontWeight: "600",
+  },
+  headerActions: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 12,
   },
-  cardTitle: { fontWeight: "bold" },
-  cardValue: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginTop: 10,
-    color: Colors.primary,
+  notificationBtn: {
+    backgroundColor: "rgba(255,255,255,0.15)",
+    padding: 8,
+    borderRadius: 20,
   },
-
-  progressBg: {
-    height: 8,
-    backgroundColor: "#E5E7EB",
-    borderRadius: 10,
-    marginTop: 10,
-  },
-  progressFill: {
-    height: "100%",
-    backgroundColor: Colors.primary,
-    borderRadius: 10,
-  },
-  progressText: { fontSize: 12, color: Colors.subText },
-
-  modalBg: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "center",
-    padding: 20,
-  },
-  modalCard: {
-    backgroundColor: Colors.card,
-    padding: 20,
+  profileBtn: {
+    backgroundColor: "rgba(255,255,255,0.15)",
+    padding: 4,
     borderRadius: 20,
   },
 
-  profileName: { fontSize: 18, fontWeight: "bold", marginTop: 10 },
-  profileSub: { color: Colors.subText },
-
-  divider: {
-    height: 1,
-    backgroundColor: Colors.border,
-    marginVertical: 15,
-  },
-
-  profileRow: {
+  // Search Styles
+  searchContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 10,
+    backgroundColor: Colors.surface,
+    borderRadius: 14,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
   },
-  profileText: { marginLeft: 10 },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
+    color: Colors.text,
+    fontSize: 14,
+  },
 
-  logoutBtn: {
-    marginTop: 15,
-    backgroundColor: Colors.danger,
-    padding: 12,
-    borderRadius: 10,
+  // KPI Styles
+  kpiContainer: {
     flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    marginTop: 20,
+    gap: 16,
+  },
+  kpiCard: {
+    flex: 1,
+    backgroundColor: Colors.surface,
+    borderRadius: 16,
+    padding: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
+    shadowColor: Colors.shadowSoft,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  kpiContent: {
+    marginLeft: 12,
+  },
+  kpiLabel: {
+    fontSize: 12,
+    color: Colors.subText,
+    fontWeight: "500",
+  },
+  kpiValue: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: Colors.text,
+    marginTop: 2,
+  },
+  kpiSub: {
+    fontSize: 10,
+    color: Colors.subText,
+    marginTop: 4,
+  },
+
+  // Section Header
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    marginTop: 24,
+    marginBottom: 12,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: Colors.text,
+  },
+  sectionCount: {
+    fontSize: 13,
+    color: Colors.subText,
+    fontWeight: "500",
+  },
+
+  // Cards Container
+  cardsContainer: {
+    paddingHorizontal: 20,
+  },
+
+  // Feature Card Styles
+  featureCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
+    shadowColor: Colors.shadowSoft,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    elevation: 1,
+  },
+  cardIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    alignItems: "center",
     justifyContent: "center",
   },
+  cardContent: {
+    flex: 1,
+    marginHorizontal: 14,
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: Colors.text,
+    marginBottom: 4,
+  },
+  cardValue: {
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  cardChevron: {
+    opacity: 0.8,
+  },
 
-  notifyTitle: { fontWeight: "bold", fontSize: 16 },
+  // Modal Styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(11, 31, 59, 0.5)",
+    justifyContent: "flex-end",
+  },
+  bottomSheet: {
+    backgroundColor: Colors.surface,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
+    padding: 24,
+    maxHeight: "85%",
+  },
+  sheetHandle: {
+    width: 48,
+    height: 5,
+    backgroundColor: Colors.border,
+    borderRadius: 3,
+    alignSelf: "center",
+    marginBottom: 24,
+  },
 
-  notifyCard: {
+  // Profile Modal Styles
+  profileHeader: {
+    alignItems: "center",
+  },
+  avatarContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: Colors.primarySoft,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 12,
+  },
+  profileName: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: Colors.text,
+    marginBottom: 4,
+  },
+  profileEmail: {
+    fontSize: 14,
+    color: Colors.subText,
+    marginBottom: 24,
+  },
+  profileStats: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: Colors.background,
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 24,
+  },
+  statItem: {
+    alignItems: "center",
+    flex: 1,
+  },
+  statValue: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: Colors.primary,
+    marginBottom: 4,
+  },
+  statLabel: {
+    fontSize: 12,
+    color: Colors.subText,
+  },
+  statDivider: {
+    width: 1,
+    backgroundColor: Colors.border,
+  },
+  logoutBtn: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: Colors.background,
-    padding: 12,
-    borderRadius: 12,
-    marginTop: 10,
+    justifyContent: "center",
+    backgroundColor: Colors.dangerSoft,
+    padding: 16,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: Colors.danger,
   },
-  notifyText: { marginLeft: 10 },
+  logoutText: {
+    color: Colors.danger,
+    fontSize: 16,
+    fontWeight: "600",
+    marginLeft: 10,
+  },
+
+  // Notifications Modal Styles
+  notificationHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  notificationTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: Colors.text,
+  },
+  doneButton: {
+    fontSize: 16,
+    color: Colors.primary,
+    fontWeight: "600",
+  },
+  notificationContainer: {
+    marginTop: 8,
+    maxHeight: 400,
+  },
+  notificationItem: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.borderLight,
+  },
+  notificationIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
+  },
+  notificationContent: {
+    flex: 1,
+  },
+  notificationMessage: {
+    fontSize: 14,
+    color: Colors.text,
+    marginVertical: 4,
+  },
+  notificationTime: {
+    fontSize: 12,
+    color: Colors.subText,
+    marginTop: 4,
+  },
 };
