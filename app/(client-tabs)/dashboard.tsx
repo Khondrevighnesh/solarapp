@@ -55,6 +55,7 @@ export default function Dashboard() {
     }
 
     setLoading(true);
+
     const client = clients.find(
       (c) => c.id === clientId && c.password === password,
     );
@@ -83,11 +84,24 @@ export default function Dashboard() {
     }
   };
 
-  /* 🔥 CRITICAL FIX: ALWAYS REDIRECT ON TAB FOCUS */
+  /* 🔥 FIX: RESET AFTER LOGOUT */
+  useEffect(() => {
+    if (!user) {
+      setLoading(false); // ✅ stop stuck loader
+      setClientId(""); // ✅ clear inputs
+      setPassword(""); // ✅ clear inputs
+    }
+  }, [user]);
+
+  /* 🔥 FIX: HANDLE FOCUS PROPERLY */
   useFocusEffect(
     useCallback(() => {
+      if (!user) {
+        setLoading(false); // ✅ prevent stuck button
+      }
+
       if (user?.role === "client") {
-        redirectUser(); // ✅ ALWAYS redirect
+        redirectUser();
       }
     }, [user]),
   );
@@ -112,7 +126,7 @@ export default function Dashboard() {
     }, []),
   );
 
-  /* ✅ IMPORTANT: SHOW NOTHING FOR CLIENT - POLISHED LOADING SCREEN */
+  /* ✅ LOADING SCREEN */
   if (user?.role === "client") {
     return (
       <Screen>
@@ -134,7 +148,7 @@ export default function Dashboard() {
     );
   }
 
-  /* 🔓 LOGIN UI (ONLY FOR NOT LOGGED USERS) */
+  /* 🔓 LOGIN UI */
   return (
     <Screen>
       <KeyboardAvoidingView
@@ -145,7 +159,6 @@ export default function Dashboard() {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
-          {/* ═══ HEADER ═══ */}
           <Animated.View entering={FadeInDown.delay(100)} style={styles.header}>
             <View style={styles.logoIcon}>
               <Ionicons name="sunny" size={32} color={Colors.accent} />
@@ -156,7 +169,6 @@ export default function Dashboard() {
             </Text>
           </Animated.View>
 
-          {/* ═══ LOGIN CARD ═══ */}
           <Animated.View
             entering={FadeInUp.delay(200)}
             style={styles.loginCard}
@@ -208,30 +220,11 @@ export default function Dashboard() {
               support.
             </Text>
           </Animated.View>
-
-          {/* ═══ TRUST INDICATORS ═══ */}
-          <Animated.View entering={FadeInUp.delay(300)} style={styles.trustRow}>
-            <View style={styles.trustItem}>
-              <Ionicons name="shield-checkmark" size={14} color={Colors.eco} />
-              <Text style={styles.trustText}>Secure Access</Text>
-            </View>
-            <View style={styles.trustDot} />
-            <View style={styles.trustItem}>
-              <Ionicons name="time" size={14} color={Colors.info} />
-              <Text style={styles.trustText}>Instant Redirect</Text>
-            </View>
-            <View style={styles.trustDot} />
-            <View style={styles.trustItem}>
-              <Ionicons name="people" size={14} color={Colors.primary} />
-              <Text style={styles.trustText}>Client Portal</Text>
-            </View>
-          </Animated.View>
         </ScrollView>
       </KeyboardAvoidingView>
     </Screen>
   );
 }
-
 // ═══════════════════════════════════════
 //  REUSABLE COMPONENTS
 // ═══════════════════════════════════════
@@ -415,7 +408,7 @@ const styles = {
     backgroundColor: Colors.surface,
     borderRadius: 24,
     padding: 40,
-    alignItems: "center",
+    alignItems: "center" as const,
     maxWidth: width - 48,
     elevation: 8,
     shadowColor: "#000",

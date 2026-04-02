@@ -330,7 +330,9 @@ export default function Home() {
         <Animated.View entering={FadeInDown.delay(400)}>
           <View style={styles.servicesHeader}>
             <Text style={styles.sectionTitle}>Our Services</Text>
-            <TouchableOpacity onPress={() => router.push("/services")}>
+            <TouchableOpacity
+              onPress={() => router.push("/dashboard/register")}
+            >
               <Text style={styles.viewAllText}>View All →</Text>
             </TouchableOpacity>
           </View>

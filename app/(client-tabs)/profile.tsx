@@ -204,24 +204,6 @@ export default function Profile() {
           </TouchableOpacity>
         </Animated.View>
 
-        {/* ═══ STATS ROW ═══ */}
-        <Animated.View entering={FadeInDown.delay(200)} style={styles.statsRow}>
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>5</Text>
-            <Text style={styles.statLabel}>Solar Plants</Text>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>₹18K</Text>
-            <Text style={styles.statLabel}>Monthly Savings</Text>
-          </View>
-          <View style={styles.statDivider} />
-          <View style={styles.statItem}>
-            <Text style={styles.statValue}>98%</Text>
-            <Text style={styles.statLabel}>Uptime</Text>
-          </View>
-        </Animated.View>
-
         {/* ═══ MENU SECTIONS ═══ */}
         {menuItems.map((section, sectionIndex) => (
           <Animated.View

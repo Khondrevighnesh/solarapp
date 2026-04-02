@@ -1,58 +1,42 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  Dimensions,
-  TouchableOpacity,
-} from "react-native";
-
+import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { useState } from "react";
 import { LineChart } from "react-native-chart-kit";
+import { Ionicons } from "@expo/vector-icons";
 
 import Screen from "../components/Screen";
 import { Colors } from "../theme/colors";
 import { Theme } from "../theme/theme";
-import { GlobalStyles } from "../theme/globalStyles";
-
-const screenWidth = Dimensions.get("window").width;
 
 export default function EPI() {
-  /* 🌱 PLANT DATA */
-  const plantCapacity = 100; // kW
+  const plantCapacity = 100;
 
-  /* 📊 GENERATION DATA */
   const dailyGeneration = [120, 140, 130, 160, 180, 170, 200];
   const monthlyGeneration = [3200, 3500, 3800, 3600, 4000, 4200, 4500];
 
   const [view, setView] = useState<"daily" | "monthly">("daily");
 
-  /* 📊 CALCULATE EPI */
-  const getEPIData = () => {
-    const data = view === "daily" ? dailyGeneration : monthlyGeneration;
+  const data = view === "daily" ? dailyGeneration : monthlyGeneration;
+  const epiData = data.map((val) => val / plantCapacity);
 
-    return {
-      labels:
-        view === "daily"
-          ? ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-          : ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+  const labels =
+    view === "daily"
+      ? ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+      : ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"];
 
-      data: data.map((val) => val / plantCapacity),
-    };
-  };
+  const current = epiData[epiData.length - 1];
+  const previous = epiData[epiData.length - 2];
 
-  const chart = getEPIData();
+  const target = 5;
 
-  const currentEPI = chart.data[chart.data.length - 1];
-  const targetEPI = 5; // industry avg
+  const performance = ((current / target) * 100).toFixed(1);
+  const diff = (((current - previous) / previous) * 100).toFixed(1);
 
-  const performance = ((currentEPI / targetEPI) * 100).toFixed(1);
-
-  const status =
-    currentEPI >= targetEPI
-      ? "Excellent 🟢"
-      : currentEPI >= targetEPI * 0.8
-        ? "Average 🟡"
-        : "Poor 🔴";
+  const statusColor =
+    current >= target
+      ? Colors.eco
+      : current >= target * 0.8
+        ? Colors.warning
+        : Colors.danger;
 
   return (
     <Screen>
@@ -60,95 +44,43 @@ export default function EPI() {
         {/* 🔝 HEADER */}
         <View
           style={{
-            backgroundColor: Colors.primary,
-            paddingTop: 60,
-            paddingBottom: 30,
-            paddingHorizontal: 20,
-            borderBottomLeftRadius: 30,
-            borderBottomRightRadius: 30,
-            borderTopLeftRadius: 30,
-            borderTopRightRadius: 30,
+            paddingTop: 10,
+
+            borderRadius: 30,
+            margin: 10,
           }}
         >
-          <Text
-            style={{
-              color: "white",
-              fontSize: Theme.font.hero,
-              fontWeight: "bold",
-            }}
-          >
-            EPI Dashboard ⚡
-          </Text>
-
-          <Text style={{ color: "#DCFCE7" }}>
-            Energy Performance Index Analysis
-          </Text>
+          <View style={[styles.card, { backgroundColor: Colors.primary }]}>
+            <Text style={styles.headerTitle}>EPI Dashboard ⚡</Text>
+            <Text style={styles.headerSub}>
+              Energy Performance Index Analysis
+            </Text>
+          </View>
         </View>
 
         {/* 📊 KPI */}
-        <View style={{ marginTop: 10 }}>
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            <KPI title="Current EPI" value={currentEPI.toFixed(2)} />
-            <KPI title="Target EPI" value={`${targetEPI}`} />
-          </View>
-
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              marginTop: 10,
-            }}
-          >
-            <KPI title="Performance" value={`${performance}%`} />
-            <KPI title="Capacity" value={`${plantCapacity} kW`} />
-          </View>
+        <View style={styles.row}>
+          <KPI title="Current EPI" value={current.toFixed(2)} />
+          <KPI title="Target" value={`${target}`} />
         </View>
 
-        {/* 🚨 STATUS */}
-        <View style={[GlobalStyles.card, { marginTop: 10 }]}>
-          <Text style={{ fontWeight: "bold" }}>System Status</Text>
-
-          <Text
-            style={{
-              marginTop: 10,
-              color: status.includes("Excellent")
-                ? "green"
-                : status.includes("Average")
-                  ? "orange"
-                  : "red",
-            }}
-          >
-            {status}
-          </Text>
+        <View style={[styles.row, { marginTop: 12 }]}>
+          <KPI title="Performance" value={`${performance}%`} highlight />
+          <KPI title="Change" value={`${diff}%`} />
         </View>
 
         {/* 🔘 TOGGLE */}
-        <View
-          style={{
-            flexDirection: "row",
-            margin: 16,
-            backgroundColor: "#F1F5F9",
-            borderRadius: 14,
-            padding: 4,
-          }}
-        >
+        <View style={styles.toggleContainer}>
           {["daily", "monthly"].map((item) => (
             <TouchableOpacity
               key={item}
               onPress={() => setView(item as any)}
-              style={{
-                flex: 1,
-                padding: 10,
-                borderRadius: 10,
-                backgroundColor: view === item ? Colors.primary : "transparent",
-              }}
+              style={[styles.toggleBtn, view === item && styles.toggleActive]}
             >
               <Text
                 style={{
-                  textAlign: "center",
-                  color: view === item ? "white" : "#64748B",
+                  color: view === item ? "#fff" : Colors.subText,
+                  fontWeight: "600",
                 }}
               >
                 {item.toUpperCase()}
@@ -157,75 +89,245 @@ export default function EPI() {
           ))}
         </View>
 
-        {/* 📈 GRAPH */}
-        <View style={[GlobalStyles.card, { marginTop: 10 }]}>
-          <Text style={{ fontWeight: "bold", marginBottom: 10 }}>
-            EPI Trend
-          </Text>
-
+        {/* 📈 TREND */}
+        <Section title="EPI Trend" icon="analytics-outline">
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <LineChart
               data={{
-                labels: chart.labels,
-                datasets: [{ data: chart.data }],
+                labels,
+                datasets: [{ data: epiData }],
               }}
-              width={chart.labels.length * 70}
+              width={labels.length * 70}
               height={220}
               bezier
               withShadow={false}
               withInnerLines={false}
               chartConfig={{
-                backgroundGradientFrom: "#fff",
-                backgroundGradientTo: "#fff",
+                backgroundGradientFrom: Colors.surface,
+                backgroundGradientTo: Colors.surface,
                 color: () => Colors.primary,
-                labelColor: () => "#64748B",
+                labelColor: () => Colors.subText,
               }}
               style={{ borderRadius: 16 }}
             />
           </ScrollView>
-        </View>
+
+          <Bullet text="Higher EPI = better efficiency" />
+          <Bullet text="Stable trend = consistent performance" />
+        </Section>
+
+        {/* 🛡 SYSTEM STATUS */}
+        <Section title="System Status" icon="shield-checkmark-outline">
+          <InfoRow
+            label="Performance"
+            value={`${performance}% of target`}
+            color={statusColor}
+          />
+          <InfoRow label="Target EPI" value={`${target}`} />
+          <InfoRow
+            label="Current EPI"
+            value={current.toFixed(2)}
+            color={Colors.accent}
+          />
+
+          <Text style={styles.note}>
+            {current >= target
+              ? "System performing above industry benchmark."
+              : "Below optimal — check cleaning & inverter efficiency."}
+          </Text>
+        </Section>
+
+        {/* 🔁 COMPARISON */}
+        <Section title="Comparison" icon="git-compare-outline">
+          <InfoRow
+            label="Change"
+            value={`${diff}%`}
+            color={diff > 0 ? Colors.eco : Colors.danger}
+          />
+          <InfoRow
+            label="Compared To"
+            value={view === "daily" ? "Yesterday" : "Last Month"}
+          />
+
+          <Text style={styles.note}>
+            {diff > 0
+              ? "Performance improved due to better sunlight."
+              : "Drop observed — possible weather/system issue."}
+          </Text>
+        </Section>
 
         {/* 💡 INSIGHTS */}
-        <View style={[GlobalStyles.card, { marginTop: 10 }]}>
-          <Text style={{ fontWeight: "bold" }}>Insights</Text>
+        <Section title="Insights" icon="bulb-outline">
+          <Bullet text="Maintain panels for better EPI" />
+          <Bullet text="Monitor inverter efficiency" />
+          <Bullet text="Track trends regularly" />
+        </Section>
 
-          <Text style={{ marginTop: 8 }}>
-            • EPI indicates plant efficiency per kW installed
-          </Text>
-
-          <Text>• Higher EPI = better performance</Text>
-
-          <Text>• Maintain panels & monitor inverter health</Text>
-        </View>
-
-        <View style={{ height: 50 }} />
+        <View style={{ height: 40 }} />
       </ScrollView>
     </Screen>
   );
 }
 
-/* 🔹 KPI */
-const KPI = ({ title, value }: any) => (
-  <View
-    style={{
-      width: "48%",
-      backgroundColor: "white",
-      padding: 16,
-      borderRadius: 16,
-      borderWidth: 1,
-      borderColor: "#E2E8F0",
-    }}
-  >
-    <Text style={{ color: "#64748B" }}>{title}</Text>
+//////////////////////////////////////////////////////
 
+const Section = ({ title, icon, children }: any) => (
+  <View style={styles.sectionContainer}>
+    <View style={styles.sectionHeader}>
+      <Ionicons name={icon} size={18} color={Colors.primary} />
+      <Text style={styles.sectionTitle}>{title}</Text>
+    </View>
+
+    <View style={styles.card}>{children}</View>
+  </View>
+);
+
+//////////////////////////////////////////////////////
+
+const InfoRow = ({ label, value, color }: any) => (
+  <View style={styles.infoRow}>
+    <Text style={styles.label}>{label}</Text>
+    <Text style={[styles.value, { color: color || Colors.text }]}>{value}</Text>
+  </View>
+);
+
+//////////////////////////////////////////////////////
+
+const KPI = ({ title, value, highlight }: any) => (
+  <View
+    style={[
+      styles.card,
+      styles.kpiCard,
+      {
+        backgroundColor: highlight ? Colors.accentSoft : Colors.surface,
+      },
+    ]}
+  >
+    <Text style={styles.kpiLabel}>{title}</Text>
     <Text
-      style={{
-        fontSize: 20,
-        fontWeight: "bold",
-        marginTop: 5,
-      }}
+      style={[
+        styles.kpiValue,
+        { color: highlight ? Colors.accent : Colors.text },
+      ]}
     >
       {value}
     </Text>
   </View>
 );
+
+//////////////////////////////////////////////////////
+
+const Bullet = ({ text }: any) => <Text style={styles.bullet}>• {text}</Text>;
+
+//////////////////////////////////////////////////////
+
+const styles = {
+  card: {
+    backgroundColor: Colors.surface,
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    shadowColor: Colors.shadow,
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    elevation: 4,
+  },
+
+  headerTitle: {
+    color: Colors.textInverse,
+    fontSize: Theme.font.hero,
+    fontWeight: "bold",
+  },
+
+  headerSub: {
+    color: Colors.primarySoft,
+    marginTop: 4,
+  },
+
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    marginTop: 12,
+  },
+
+  kpiCard: {
+    width: "48%",
+  },
+
+  kpiLabel: {
+    color: Colors.subText,
+    fontSize: 12,
+  },
+
+  kpiValue: {
+    fontSize: 22,
+    fontWeight: "bold",
+    marginTop: 6,
+  },
+
+  toggleContainer: {
+    flexDirection: "row",
+    marginHorizontal: 16,
+    marginTop: 16,
+    backgroundColor: Colors.surfaceAlt,
+    borderRadius: 12,
+    padding: 4,
+  },
+
+  toggleBtn: {
+    flex: 1,
+    padding: 10,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+
+  toggleActive: {
+    backgroundColor: Colors.primary,
+  },
+
+  sectionContainer: {
+    paddingHorizontal: 16,
+    marginTop: 18,
+  },
+
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+    gap: 6,
+  },
+
+  sectionTitle: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: Colors.text,
+  },
+
+  infoRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderColor: Colors.borderLight,
+  },
+
+  label: {
+    color: Colors.subText,
+  },
+
+  value: {
+    fontWeight: "600",
+  },
+
+  note: {
+    marginTop: 8,
+    color: Colors.textSecondary,
+  },
+
+  bullet: {
+    color: Colors.textSecondary,
+    marginTop: 6,
+  },
+};

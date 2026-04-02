@@ -41,7 +41,7 @@ export default function ClientEntry() {
   const [otpTimer, setOtpTimer] = useState(0);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const progress = useSharedValue(0);
-
+  const otpInputRef = useRef(null);
   // OTP Timer
   useEffect(() => {
     if (otpTimer > 0) {
@@ -49,6 +49,7 @@ export default function ClientEntry() {
         setOtpTimer(otpTimer - 1);
       }, 1000);
     }
+
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
@@ -69,6 +70,7 @@ export default function ClientEntry() {
 
     const dummyOtp = "1234";
     setGeneratedOtp(dummyOtp);
+    setOtp("");
     setOtpTimer(30); // 30 second timer
     setStep(3);
 
@@ -377,19 +379,28 @@ export default function ClientEntry() {
 
               <View style={styles.otpContainer}>
                 {[0, 1, 2, 3].map((i) => (
-                  <View
+                  <TouchableOpacity
                     key={i}
+                    activeOpacity={1}
+                    onPress={() => {
+                      otpInputRef.current?.focus(); // ✅ fix focus
+                    }}
+                    onLongPress={() => {
+                      setOtp(""); // ✅ clear OTP
+                      otpInputRef.current?.focus();
+                    }}
                     style={[
                       styles.otpBox,
                       otp.length === i && styles.otpBoxActive,
                     ]}
                   >
                     <Text style={styles.otpText}>{otp[i] ? "●" : ""}</Text>
-                  </View>
+                  </TouchableOpacity>
                 ))}
               </View>
 
               <TextInput
+                ref={otpInputRef}
                 value={otp}
                 onChangeText={(text) => setOtp(text.slice(0, 4))}
                 keyboardType="number-pad"

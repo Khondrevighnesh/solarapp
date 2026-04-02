@@ -6,8 +6,11 @@ import {
   Linking,
 } from "react-native";
 
+import { Ionicons } from "@expo/vector-icons";
+
 import Screen from "../components/Screen";
 import { Colors } from "../theme/colors";
+import { Theme } from "../theme/theme";
 
 export default function PlantInfo() {
   const plant = {
@@ -16,8 +19,8 @@ export default function PlantInfo() {
     locationUrl: "https://maps.google.com/?q=Pune",
     contact: "7249780908",
 
-    modules: 200,
     capacity: "100 kW",
+    modules: 200,
     strings: 12030,
 
     moduleMake: "SolarTech",
@@ -32,6 +35,11 @@ export default function PlantInfo() {
 
     contractStart: "18/06/2025",
     contractEnd: "30/06/2026",
+
+    status: "ACTIVE",
+    generationToday: "520 kWh",
+    performance: "94%",
+    faults: 0,
   };
 
   return (
@@ -40,77 +48,158 @@ export default function PlantInfo() {
         {/* 🔝 HEADER */}
         <View
           style={{
-            backgroundColor: Colors.primary,
-            paddingTop: 60,
-            paddingBottom: 28,
-            paddingHorizontal: 20,
+            paddingTop: 10,
+
             borderRadius: 30,
+            margin: 10,
           }}
         >
-          <Text
-            style={{
-              color: "white",
-              fontSize: 24,
-              fontWeight: "700",
-            }}
-          >
-            {plant.name}
-          </Text>
+          <View style={[styles.card, { backgroundColor: Colors.primary }]}>
+            <Text style={styles.headerTitle}>{plant.name}</Text>
+            <Text style={styles.headerSub}>{plant.address}</Text>
 
-          <Text
-            style={{
-              color: "#DCFCE7",
-              marginTop: 4,
-            }}
-          >
-            Plant Information System
-          </Text>
+            <View style={styles.statusBadge}>
+              <Text style={styles.statusText}>{plant.status}</Text>
+            </View>
+          </View>
         </View>
 
-        {/* 📍 OVERVIEW */}
-        <Section title="Overview">
-          <TableRow label="Plant Name" value={plant.name} bold />
+        {/* ⚡ QUICK STATS */}
+        <View style={styles.rowBetween}>
+          <StatCard title="Today" value={plant.generationToday} />
+          <StatCard title="PR" value={plant.performance} highlight />
+          <StatCard
+            title="Faults"
+            value={plant.faults === 0 ? "None" : plant.faults}
+            danger={plant.faults > 0}
+          />
+        </View>
 
-          <TouchableOpacity onPress={() => Linking.openURL(plant.locationUrl)}>
-            <TableRow label="Location" value="View on Map" highlight />
+        {/* ACTION BUTTONS */}
+        <View style={styles.rowButtons}>
+          <TouchableOpacity
+            style={styles.primaryBtn}
+            onPress={() => Linking.openURL(plant.locationUrl)}
+          >
+            <Text style={styles.btnText}>📍 Location</Text>
           </TouchableOpacity>
 
-          <TableRow label="Address" value={plant.address} />
-          <TableRow label="Contact" value={plant.contact} />
-        </Section>
+          <TouchableOpacity
+            style={styles.secondaryBtn}
+            onPress={() => Linking.openURL(`tel:${plant.contact}`)}
+          >
+            <Text style={styles.secondaryText}>📞 Call</Text>
+          </TouchableOpacity>
+        </View>
 
-        {/* ⚙️ TECHNICAL */}
-        <Section title="Technical Specifications">
-          <TableRow label="Modules" value={plant.modules} />
-          <TableRow label="Capacity" value={plant.capacity} bold />
-          <TableRow label="Strings" value={plant.strings} />
+        {/* CONTENT */}
+        <View style={{ paddingHorizontal: 20, marginTop: 20 }}>
+          <Section title="Overview">
+            <Row
+              icon="business-outline"
+              label="Plant Name"
+              value={plant.name}
+            />
+            <Row
+              icon="location-outline"
+              label="Site Location"
+              value="View Location"
+              link
+              onPress={() => Linking.openURL(plant.locationUrl)}
+            />
+            <Row icon="map-outline" label="Address" value={plant.address} />
+            <Row icon="call-outline" label="Contact" value={plant.contact} />
+          </Section>
 
-          <Divider />
+          <Section title="Technical">
+            <Row
+              icon="flash-outline"
+              label="Capacity"
+              value={plant.capacity}
+              highlight
+            />
+            <Row icon="grid-outline" label="Modules" value={plant.modules} />
+            <Row
+              icon="git-network-outline"
+              label="Strings"
+              value={plant.strings}
+            />
 
-          <TableRow label="Module Make" value={plant.moduleMake} />
-          <TableRow label="Module Type" value={plant.moduleType} />
+            <Divider />
 
-          <Divider />
+            <Row
+              icon="cube-outline"
+              label="Module Make"
+              value={plant.moduleMake}
+            />
+            <Row
+              icon="layers-outline"
+              label="Module Type"
+              value={plant.moduleType}
+            />
 
-          <TableRow label="Inverter Make" value={plant.inverterMake} />
-          <TableRow label="Model" value={plant.inverterModel} />
-          <TableRow label="Serial No." value={plant.inverterSerial} />
-          <TableRow
-            label="Inverter Capacity"
-            value={plant.inverterCapacity}
-            bold
-          />
+            <Divider />
 
-          <Divider />
+            <Row
+              icon="hardware-chip-outline"
+              label="Inverter Make"
+              value={plant.inverterMake}
+            />
+            <Row
+              icon="settings-outline"
+              label="Model"
+              value={plant.inverterModel}
+            />
+            <Row
+              icon="barcode-outline"
+              label="Serial"
+              value={plant.inverterSerial}
+            />
+            <Row
+              icon="battery-charging-outline"
+              label="Capacity"
+              value={plant.inverterCapacity}
+            />
 
-          <TableRow label="Internet" value={plant.internet} />
-        </Section>
+            <Divider />
 
-        {/* 📅 CONTRACT */}
-        <Section title="Contract">
-          <TableRow label="Start Date" value={plant.contractStart} />
-          <TableRow label="End Date" value={plant.contractEnd} />
-        </Section>
+            <Row icon="wifi-outline" label="Internet" value={plant.internet} />
+          </Section>
+
+          <Section title="Performance">
+            <Row
+              icon="sunny-outline"
+              label="Generation"
+              value={plant.generationToday}
+              accent
+            />
+            <Row
+              icon="trending-up-outline"
+              label="Performance"
+              value={plant.performance}
+              accent
+            />
+            <Row
+              icon="shield-checkmark-outline"
+              label="System Health"
+              value={plant.faults === 0 ? "Healthy" : "Issue"}
+              status={plant.faults === 0}
+            />
+          </Section>
+
+          <Section title="Contract">
+            <Row
+              icon="calendar-outline"
+              label="Start Date"
+              value={plant.contractStart}
+            />
+            <Row
+              icon="calendar-clear-outline"
+              label="End Date"
+              value={plant.contractEnd}
+            />
+          </Section>
+        </View>
 
         <View style={{ height: 40 }} />
       </ScrollView>
@@ -120,77 +209,70 @@ export default function PlantInfo() {
 
 //////////////////////////////////////////////////////
 
-/* 🔷 SECTION CARD */
 const Section = ({ title, children }: any) => (
-  <View
-    style={{
-      backgroundColor: "white",
+  <View style={{ marginBottom: 24 }}>
+    <Text style={styles.sectionTitle}>{title}</Text>
 
-      marginTop: 16,
-      borderRadius: 16,
-      borderWidth: 1,
-      borderColor: "#E2E8F0",
-      overflow: "hidden",
-    }}
-  >
-    {/* Section Header */}
-    <View
-      style={{
-        paddingHorizontal: 16,
-        paddingVertical: 12,
-        backgroundColor: "#F8FAFC",
-        borderBottomWidth: 1,
-        borderColor: "#E2E8F0",
-      }}
-    >
-      <Text
-        style={{
-          fontSize: 15,
-          fontWeight: "700",
-          color: Colors.text,
-        }}
-      >
-        {title}
-      </Text>
-    </View>
-
-    {/* Content */}
-    <View style={{ paddingHorizontal: 16 }}>{children}</View>
+    <View style={styles.card}>{children}</View>
   </View>
 );
 
 //////////////////////////////////////////////////////
 
-/* 🔷 TABLE ROW */
-const TableRow = ({ label, value, highlight, bold }: any) => (
-  <View
-    style={{
-      flexDirection: "row",
-      justifyContent: "space-between",
-      paddingVertical: 12,
-      borderBottomWidth: 1,
-      borderColor: "#F1F5F9",
-    }}
-  >
-    {/* LEFT */}
-    <Text
-      style={{
-        color: "#64748B",
-        fontSize: 13,
-        flex: 1,
-      }}
-    >
-      {label}
-    </Text>
+const Row = ({
+  icon,
+  label,
+  value,
+  highlight,
+  status,
+  accent,
+  link,
+  onPress,
+}: any) => {
+  const color = link
+    ? Colors.primary
+    : highlight
+      ? Colors.primary
+      : accent
+        ? Colors.accent
+        : status === true
+          ? Colors.eco
+          : status === false
+            ? Colors.danger
+            : Colors.text;
 
-    {/* RIGHT */}
+  const content = (
+    <View style={styles.row}>
+      <View style={styles.rowLeft}>
+        <Ionicons name={icon} size={18} color={Colors.subText} />
+        <Text style={styles.label}>{label}</Text>
+      </View>
+
+      <Text style={[styles.value, { color }]}>{value}</Text>
+    </View>
+  );
+
+  if (onPress)
+    return <TouchableOpacity onPress={onPress}>{content}</TouchableOpacity>;
+
+  return content;
+};
+
+//////////////////////////////////////////////////////
+
+const Divider = () => <View style={{ height: 10 }} />;
+
+//////////////////////////////////////////////////////
+
+const StatCard = ({ title, value, highlight, danger }: any) => (
+  <View style={[styles.card, { width: "31%" }]}>
+    <Text style={{ fontSize: 11, color: Colors.subText }}>{title}</Text>
+
     <Text
       style={{
-        fontSize: 13,
-        fontWeight: bold ? "700" : "600",
-        color: highlight ? Colors.primary : "#0F172A",
-        flex: 1,
-        textAlign: "right",
+        marginTop: 4,
+        fontWeight: "bold",
+        color: highlight ? Colors.accent : danger ? Colors.danger : Colors.text,
       }}
     >
       {value}
@@ -200,11 +282,111 @@ const TableRow = ({ label, value, highlight, bold }: any) => (
 
 //////////////////////////////////////////////////////
 
-/* 🔷 DIVIDER */
-const Divider = () => (
-  <View
-    style={{
-      height: 8,
-    }}
-  />
-);
+const styles = {
+  card: {
+    backgroundColor: Colors.surface,
+    borderRadius: 16,
+    padding: 14,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    shadowColor: Colors.shadow,
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    elevation: 4,
+  },
+
+  headerTitle: {
+    color: Colors.textInverse,
+    fontSize: Theme.font.hero,
+    fontWeight: "bold",
+  },
+
+  headerSub: {
+    color: Colors.primarySoft,
+    marginTop: 4,
+  },
+
+  statusBadge: {
+    marginTop: 10,
+    backgroundColor: Colors.ecoSoft,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 10,
+    alignSelf: "flex-start",
+  },
+
+  statusText: {
+    color: Colors.eco,
+    fontWeight: "600",
+    fontSize: 12,
+  },
+
+  sectionTitle: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: Colors.textSecondary,
+    marginBottom: 10,
+  },
+
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderColor: Colors.borderLight,
+  },
+
+  rowLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+
+  label: {
+    color: Colors.subText,
+  },
+
+  value: {
+    fontWeight: "600",
+  },
+
+  rowBetween: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+  },
+
+  rowButtons: {
+    flexDirection: "row",
+    paddingHorizontal: 20,
+    marginTop: 16,
+  },
+
+  primaryBtn: {
+    flex: 1,
+    backgroundColor: Colors.primary,
+    padding: 12,
+    borderRadius: 14,
+    alignItems: "center",
+    marginRight: 8,
+  },
+
+  secondaryBtn: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: Colors.primary,
+    padding: 12,
+    borderRadius: 14,
+    alignItems: "center",
+  },
+
+  btnText: {
+    color: Colors.textInverse,
+    fontWeight: "600",
+  },
+
+  secondaryText: {
+    color: Colors.primary,
+    fontWeight: "600",
+  },
+};
