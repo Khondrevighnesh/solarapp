@@ -303,7 +303,7 @@ export default function Calculators() {
           <View style={styles.quickLinks}>
             <TouchableOpacity
               style={styles.quickLink}
-              onPress={() => router.push("/services")}
+              onPress={() => router.push("/dashboard/register")}
             >
               <Ionicons name="grid" size={20} color={Colors.primary} />
               <Text style={styles.quickLinkText}>View O&M Services</Text>
@@ -317,14 +317,14 @@ export default function Calculators() {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.quickLink}
-              onPress={() => router.push("/faq")}
+              onPress={() => router.push("/(client-tabs)/document")}
             >
               <Ionicons name="help-circle" size={20} color={Colors.info} />
-              <Text style={styles.quickLinkText}>Solar FAQ</Text>
+              <Text style={styles.quickLinkText}>Documents</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.quickLink}
-              onPress={() => router.push("/contact")}
+              onPress={() => router.push("/dashboard/register")}
             >
               <Ionicons name="call" size={20} color={Colors.eco} />
               <Text style={styles.quickLinkText}>Contact Support</Text>

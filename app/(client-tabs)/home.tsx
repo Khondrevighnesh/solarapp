@@ -92,55 +92,47 @@ const services = [
     icon: "water",
     title: "Panel Cleaning",
     desc: "Deep clean to restore efficiency",
-    price: "From ₹999",
+
     bg: Colors.warningSoft,
     color: Colors.warning,
-    route: "/services/cleaning",
+    route: "/components/services",
   },
   {
     icon: "construct",
     title: "AMC Plan",
     desc: "Full annual maintenance coverage",
-    price: "From ₹4,999/yr",
+
     bg: Colors.infoSoft,
     color: Colors.info,
-    route: "/services/amc",
+    route: "/components/services",
   },
   {
     icon: "pulse",
     title: "Live Monitoring",
     desc: "24/7 real-time performance tracking",
-    price: "From ₹499/mo",
+
     bg: Colors.ecoSoft,
     color: Colors.eco,
-    route: "/services/monitoring",
+    route: "/components/services",
   },
   {
     icon: "flash",
     title: "Inverter Service",
     desc: "Expert diagnosis & replacement",
-    price: "From ₹2,999",
+
     bg: Colors.accentSoft,
     color: Colors.accent,
-    route: "/services/inverter",
+    route: "/components/services",
   },
-  {
-    icon: "hammer",
-    title: "Panel Repair",
-    desc: "Fix damaged or faulty panels",
-    price: "From ₹1,499",
-    bg: Colors.dangerSoft,
-    color: Colors.danger,
-    route: "/services/repair",
-  },
+
   {
     icon: "file-tray",
     title: "Annual Audit",
     desc: "Complete system health checkup",
-    price: "From ₹2,999",
+
     bg: Colors.primarySoft,
     color: Colors.primary,
-    route: "/services/audit",
+    route: "/components/services",
   },
 ];
 
@@ -331,7 +323,7 @@ export default function Home() {
           <View style={styles.servicesHeader}>
             <Text style={styles.sectionTitle}>Our Services</Text>
             <TouchableOpacity
-              onPress={() => router.push("/dashboard/register")}
+              onPress={() => router.push("/components/services")}
             >
               <Text style={styles.viewAllText}>View All →</Text>
             </TouchableOpacity>

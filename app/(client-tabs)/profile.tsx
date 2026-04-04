@@ -475,7 +475,7 @@ export default function Profile() {
                   </View>
                   <View style={styles.supportOptionText}>
                     <Text style={styles.supportOptionTitle}>Call Us</Text>
-                    <Text style={styles.supportOptionSub}>+91 98765 43210</Text>
+                    <Text style={styles.supportOptionSub}>+91 9975929989</Text>
                   </View>
                   <Ionicons
                     name="chevron-forward"
@@ -486,7 +486,7 @@ export default function Profile() {
 
                 <TouchableOpacity
                   style={styles.supportOption}
-                  onPress={() => Linking.openURL("https://wa.me/919876543210")}
+                  onPress={() => Linking.openURL("https://wa.me/91 9975929989")}
                 >
                   <View
                     style={[styles.supportIcon, { backgroundColor: "#E8F5E9" }]}
@@ -509,7 +509,7 @@ export default function Profile() {
                 <TouchableOpacity
                   style={styles.supportOption}
                   onPress={() =>
-                    Linking.openURL("mailto:support@sustainfy.com")
+                    Linking.openURL("mailto:assure@sustainfyenergy.com")
                   }
                 >
                   <View
@@ -523,7 +523,7 @@ export default function Profile() {
                   <View style={styles.supportOptionText}>
                     <Text style={styles.supportOptionTitle}>Email</Text>
                     <Text style={styles.supportOptionSub}>
-                      support@sustainfy.com
+                      assure@sustainfyenergy.com
                     </Text>
                   </View>
                   <Ionicons
