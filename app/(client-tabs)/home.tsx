@@ -38,7 +38,7 @@ const getGreetingIcon = () => {
 
 // Static Data
 const trustBadges = [
-  { icon: "shield-checkmark", label: "MNRE Certified" },
+  // { icon: "shield-checkmark", label: "MNRE Certified" },
   { icon: "business", label: "500+ Plants" },
   { icon: "star", label: "4.8★ Rating" },
 ];
@@ -95,7 +95,7 @@ const services = [
 
     bg: Colors.warningSoft,
     color: Colors.warning,
-    route: "/components/services",
+    route: "/components/cleaning",
   },
   {
     icon: "construct",
@@ -113,7 +113,7 @@ const services = [
 
     bg: Colors.ecoSoft,
     color: Colors.eco,
-    route: "/components/services",
+    route: "/components/monitoring",
   },
   {
     icon: "flash",
@@ -122,7 +122,7 @@ const services = [
 
     bg: Colors.accentSoft,
     color: Colors.accent,
-    route: "/components/services",
+    route: "/components/inverterServices",
   },
 
   {
@@ -132,7 +132,7 @@ const services = [
 
     bg: Colors.primarySoft,
     color: Colors.primary,
-    route: "/components/services",
+    route: "/components/audit",
   },
 ];
 

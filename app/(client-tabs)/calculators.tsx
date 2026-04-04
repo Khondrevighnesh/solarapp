@@ -87,8 +87,7 @@ export default function Calculators() {
       desc: "Estimate annual maintenance contract costs",
       color: Colors.info,
       bg: Colors.infoSoft,
-      route: "/calculators/amc",
-      stats: "₹4,999/yr",
+      route: "/components/services",
     },
   ];
 
