@@ -245,7 +245,7 @@ export default function PricingScreen() {
           <View style={styles.infoTextWrap}>
             <Text style={styles.infoTitle}>Enterprise Grade Protection</Text>
             <Text style={styles.infoDesc}>
-              MNRE Certified • 98% Uptime • Cancel Anytime
+              Trusted Service • 98% Uptime • 24/7 Support
             </Text>
           </View>
         </Animated.View>

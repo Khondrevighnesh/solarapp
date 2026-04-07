@@ -1,5 +1,6 @@
 import {
   View,
+  Image,
   Text,
   TextInput,
   TouchableOpacity,
@@ -42,6 +43,8 @@ export default function ClientEntry() {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const progress = useSharedValue(0);
   const otpInputRef = useRef(null);
+  const logo = require("../../assets/images/pvprotech.png");
+
   // OTP Timer
   useEffect(() => {
     if (otpTimer > 0) {
@@ -152,8 +155,16 @@ export default function ClientEntry() {
             style={styles.illustration}
           >
             <View style={styles.illustrationCircle}>
-              <Ionicons name="sunny" size={60} color={Colors.accent} />
-              <View style={styles.illustrationRays}>
+              <Image
+                source={logo}
+                style={{
+                  width: 120,
+                  height: 120,
+                  resizeMode: "contain",
+                }}
+              />
+
+              {/* <View style={styles.illustrationRays}>
                 {[0, 45, 90, 135, 180, 225, 270, 315].map((angle, i) => (
                   <View
                     key={i}
@@ -168,11 +179,11 @@ export default function ClientEntry() {
                     ]}
                   />
                 ))}
-              </View>
+              </View> */}
             </View>
+
             <Text style={styles.illustrationText}>PVprotech</Text>
           </Animated.View>
-
           {/* ═══ PROGRESS STEPS ═══ */}
           <Animated.View
             entering={FadeInDown.delay(200)}
@@ -186,7 +197,7 @@ export default function ClientEntry() {
                 ]}
               >
                 {step > 1 ? (
-                  <Ionicons name="checkmark" size={14} color="#fff" />
+                  <Ionicons name="checkmark" size={20} color="#fff" />
                 ) : (
                   <Text style={styles.progressDotText}>1</Text>
                 )}
@@ -204,7 +215,7 @@ export default function ClientEntry() {
                 ]}
               >
                 {step > 2 ? (
-                  <Ionicons name="checkmark" size={14} color="#fff" />
+                  <Ionicons name="checkmark" size={20} color="#fff" />
                 ) : (
                   <Text style={styles.progressDotText}>2</Text>
                 )}
@@ -567,7 +578,7 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
   progressLine: {
-    width: 60,
+    width: 100,
     height: 3,
     backgroundColor: Colors.border,
     marginHorizontal: 4,

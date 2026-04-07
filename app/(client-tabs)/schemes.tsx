@@ -63,7 +63,7 @@ export default function Schemes() {
     },
     {
       title: "AMC Maintenance Plan",
-      subtitle: "From ₹4,999/year",
+      subtitle: "From ₹999/year",
       badge: "Recommended",
       badgeColor: Colors.info,
       badgeBg: Colors.infoSoft,
@@ -78,7 +78,7 @@ export default function Schemes() {
         "Priority support",
         "Parts coverage",
       ],
-      action: () => router.push("/dashboard/register"),
+      action: () => router.push("/components/services"),
       actionLabel: "Get AMC Quote",
       route: null,
     },
@@ -248,11 +248,11 @@ export default function Schemes() {
         <Animated.View entering={FadeInDown.delay(200)} style={styles.trustRow}>
           <View style={styles.trustBadge}>
             <Ionicons name="shield-checkmark" size={14} color={Colors.eco} />
-            <Text style={styles.trustText}>MNRE Approved</Text>
+            <Text style={styles.trustText}>Trusted Service</Text>
           </View>
           <View style={styles.trustBadge}>
             <Ionicons name="checkmark-circle" size={14} color={Colors.info} />
-            <Text style={styles.trustText}>500+ Installations</Text>
+            <Text style={styles.trustText}>120+ Installations</Text>
           </View>
           <View style={styles.trustBadge}>
             <Ionicons name="star" size={14} color={Colors.accent} />
@@ -385,8 +385,8 @@ export default function Schemes() {
             />
             <VideoCard
               title="Solar Installation Process"
-              duration="7 min"
-              url="https://www.youtube.com/watch?v=U0Y2j5FZl0E"
+              duration="12 min"
+              url="https://youtu.be/khYZTmm7S5I?si=bPFVQfDtMkbCfmjT"
             />
             <VideoCard
               title="Reduce Electricity Bill"

@@ -49,7 +49,7 @@ export default function SavingsCalculator() {
 
         {/* Hero */}
         <Animated.View entering={FadeInDown.delay(100)} style={styles.heroCard}>
-          <Ionicons name="trending-down" size={36} color={Colors.eco} />
+          <Ionicons name="trending-up-outline" size={36} color={Colors.eco} />
           <Text style={styles.heroTitle}>Calculate Your Savings</Text>
           <Text style={styles.heroSubtitle}>
             See how much you can reduce your electricity bill with solar

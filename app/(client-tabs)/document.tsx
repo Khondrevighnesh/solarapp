@@ -21,27 +21,90 @@ export default function UploadDocuments() {
   const [documents, setDocuments] = useState<any[]>([]);
   const [fileName, setFileName] = useState("");
   const [selectedDocType, setSelectedDocType] = useState("");
-
   const documentTypes = [
-    { id: "bill", label: "Electricity Bill", icon: "flash" },
-    { id: "id", label: "ID Proof", icon: "card" },
-    { id: "address", label: "Address Proof", icon: "location" },
-    { id: "property", label: "Property Tax", icon: "home" },
-    { id: "photo", label: "Photo", icon: "person" },
-    { id: "other", label: "Other", icon: "document" },
+    { id: "bill", label: "Electricity Bill", icon: "document" },
+    {
+      id: "Single Line Diagram",
+      label: "Single Line Diagram",
+      icon: "document",
+    },
+    { id: "PV Array Layout", label: "PV Array Layout", icon: "document" },
+    {
+      id: "Pyranometer Calibration Certificate",
+      label: "Pyranometer Calibration Certificate",
+      icon: "document",
+    },
+    {
+      id: "Module Warranty Certificat",
+      label: "Module Warranty Certificat",
+      icon: "document",
+    },
+    {
+      id: "Inverter Warranty Certificate",
+      label: "Inverter Warranty Certificate",
+      icon: "document",
+    },
+    { id: "Module Datasheet", label: "Module Datasheet", icon: "document" },
+    { id: "Inverter Datasheet", label: "Inverter Datasheet", icon: "document" },
+
+    { id: "String Layout", label: "String Layout", icon: "document" },
   ];
 
   const requiredDocs = [
-    { label: "Electricity Bill", desc: "Last 3 months", required: true },
     {
-      label: "ID Proof (Aadhaar/PAN)",
-      desc: "Government issued",
+      id: "bill",
+      label: "Electricity Bill",
+      desc: "Last 3 months bills",
       required: true,
     },
-    { label: "Address Proof", desc: "Voter ID/Passport", required: true },
-    { label: "Property Tax Receipt", desc: "Recent year", required: false },
-    { label: " Photo", desc: "White background", required: true },
-    { label: "Bank Details", desc: "Cancelled cheque", required: true },
+    {
+      id: "Single Line Diagram",
+      label: "Single Line Diagram",
+      desc: "System connection diagram",
+      required: true,
+    },
+    {
+      id: "PV Array Layout",
+      label: "PV Array Layout",
+      desc: "Panel placement layout",
+      required: true,
+    },
+    {
+      id: "String Layout",
+      label: "String Layout",
+      desc: "Panel string configuration",
+      required: true,
+    },
+    {
+      id: "Module Warranty Certificate",
+      label: "Module Warranty Certificate",
+      desc: "Solar panel warranty proof",
+      required: true,
+    },
+    {
+      id: "Inverter Warranty Certificate",
+      label: "Inverter Warranty Certificate",
+      desc: "Inverter warranty proof",
+      required: true,
+    },
+    {
+      id: "Module Datasheet",
+      label: "Module Datasheet",
+      desc: "Panel technical details",
+      required: true,
+    },
+    {
+      id: "Inverter Datasheet",
+      label: "Inverter Datasheet",
+      desc: "Inverter specifications",
+      required: true,
+    },
+    {
+      id: "Pyranometer Calibration Certificate",
+      label: "Pyranometer Calibration Certificate",
+      desc: "Sensor calibration proof",
+      required: true,
+    },
   ];
 
   /* 📄 PICK FILE */
@@ -112,9 +175,7 @@ export default function UploadDocuments() {
   const handleSubmit = () => {
     const uploadedTypes = documents.map((d) => d.type);
     const missing = requiredDocs.filter(
-      (r) =>
-        r.required &&
-        !uploadedTypes.includes(r.label.toLowerCase().split(" ")[0]),
+      (r) => r.required && !uploadedTypes.includes(r.id),
     ).length;
 
     if (documents.length === 0) {
@@ -201,11 +262,7 @@ export default function UploadDocuments() {
           <Text style={styles.sectionTitle}>Document Checklist</Text>
           <View style={styles.requireCard}>
             {requiredDocs.map((doc, i) => {
-              const isUploaded = documents.some((d) =>
-                d.typeLabel
-                  .toLowerCase()
-                  .includes(doc.label.toLowerCase().split(" ")[0]),
-              );
+              const isUploaded = documents.some((d) => d.type === doc.id);
               return (
                 <View key={i} style={styles.requireItem}>
                   <View style={styles.requireLeft}>

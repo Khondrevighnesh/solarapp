@@ -39,7 +39,7 @@ const getGreetingIcon = () => {
 // Static Data
 const trustBadges = [
   // { icon: "shield-checkmark", label: "MNRE Certified" },
-  { icon: "business", label: "500+ Plants" },
+  { icon: "business", label: "120+ Plants" },
   { icon: "star", label: "4.8★ Rating" },
 ];
 
@@ -53,7 +53,7 @@ const processSteps = [
 const quickActions = [
   {
     icon: "calculator",
-    label: "Calculator",
+    label: "Calculators",
     color: Colors.eco,
     bg: Colors.ecoSoft,
     route: "/calculators",
@@ -67,7 +67,7 @@ const quickActions = [
   },
   {
     icon: "grid",
-    label: "Document",
+    label: "Documents",
     color: Colors.accent,
     bg: Colors.accentSoft,
     route: "/document",
@@ -201,7 +201,14 @@ export default function Home() {
             />
           </TouchableOpacity>
         </Animated.View>
-
+        {/* ═══ LOCATION BAR ═══ */}
+        <Animated.View
+          entering={FadeInDown.delay(180)}
+          style={styles.locationRow}
+        >
+          <Ionicons name="location" size={20} color={Colors.accent} />
+          <Text style={styles.locationText}>{city}</Text>
+        </Animated.View>
         {/* ═══ TRUST BADGES ═══ */}
         <Animated.View entering={FadeInDown.delay(150)} style={styles.trustRow}>
           {trustBadges.map((badge, i) => (
@@ -210,15 +217,6 @@ export default function Home() {
               <Text style={styles.trustLabel}>{badge.label}</Text>
             </View>
           ))}
-        </Animated.View>
-
-        {/* ═══ LOCATION BAR ═══ */}
-        <Animated.View
-          entering={FadeInDown.delay(180)}
-          style={styles.locationRow}
-        >
-          <Ionicons name="location" size={20} color={Colors.accent} />
-          <Text style={styles.locationText}>{city}</Text>
         </Animated.View>
 
         {/* ═══ HERO TIP CARD ═══ */}
@@ -261,7 +259,7 @@ export default function Home() {
 
         {/* ═══ HOW IT WORKS ═══ */}
         <Animated.View entering={FadeInDown.delay(300)}>
-          <Text style={styles.sectionTitle}>How It Works</Text>
+          <Text style={styles.sectionTitle}>How It Works ?</Text>
           <View style={styles.processCard}>
             {processSteps.map((item, i) => (
               <View key={i} style={styles.processItem}>
@@ -282,13 +280,13 @@ export default function Home() {
             {[
               {
                 icon: "shield-checkmark",
-                title: "MNRE Certified",
-                desc: "Government approved",
+                title: "Trusted Service",
+                desc: "Proven Performance",
                 color: Colors.eco,
               },
               {
                 icon: "people",
-                title: "500+ Clients",
+                title: "120+ Clients",
                 desc: "Trusted across India",
                 color: Colors.info,
               },
@@ -300,7 +298,7 @@ export default function Home() {
               },
               {
                 icon: "time",
-                title: "48hr Support",
+                title: "24/7 Support",
                 desc: "Quick response",
                 color: Colors.primary,
               },
@@ -537,7 +535,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 3,
-    marginBottom: 14,
+    marginBottom: 10,
   },
   locationText: {
     fontSize: 12,

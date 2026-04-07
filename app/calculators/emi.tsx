@@ -309,17 +309,9 @@ export default function EMICalculator() {
 
             <TouchableOpacity
               style={styles.cta}
-              onPress={() => router.push("/dashboard/register")}
-            >
-              <Ionicons name="document-text" size={18} color="#fff" />
-              <Text style={styles.ctaText}>Apply for Solar Loan →</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.secondaryCta}
               onPress={() => router.push("/calculators/savings")}
             >
-              <Text style={styles.secondaryCtaText}>Check Savings First →</Text>
+              <Text style={styles.ctaText}>Check Savings First →</Text>
             </TouchableOpacity>
           </Animated.View>
         )}
